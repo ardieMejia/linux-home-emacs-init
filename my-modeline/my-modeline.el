@@ -9,7 +9,7 @@
 	   ;;     (propertize "Re" 'face 'shr-h1)
 	   ;;   (propertize "Wr" 'face 'shr-h1))
 	   (if buffer-read-only
-	       (propertize "Re " 'face 'ansi-color-bold)
+	       (propertize "Re " 'face 'eww-form-text)
 	     (propertize "Wr " 'face 'hydra-face-blue)
 	     )
 	   
@@ -66,5 +66,5 @@
 
 (add-hook 'java-mode-hook 'my-mode-line-generic-1)
 
-
+(add-hook 'web-mode-hook 'my-mode-line-generic-1)
 

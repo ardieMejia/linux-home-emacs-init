@@ -52,6 +52,9 @@
 (load-file "~/.config/emacs/my-modeline/my-modeline.el")
 (load-file "~/.config/emacs/my_org_settings/my-sound.el")
 (load-file "~/.config/emacs/my_projectile/my-projectile.el")
+(load-file "~/.config/emacs/my_web/my_web_mode.el")
+(load-file "~/.config/emacs/my_looks/my_looks.el")
+;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
 
 
@@ -74,8 +77,9 @@
 
 ;; (add-to-list 'org-structure-template-alist '("m" . "src magik"))
 (add-to-list 'org-structure-template-alist '("el" . "src lisp"))
-;; (add-to-list 'org-structure-template-alist '("sh" . "src html"))
+(add-to-list 'org-structure-template-alist '("sh" . "src html"))
 (add-to-list 'org-structure-template-alist '("p" . "src python"))
+(add-to-list 'org-structure-template-alist '("j" . "src javascript"))
 ;; (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
 ;; (add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
 ;; (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
@@ -112,7 +116,7 @@
 
 ;; ========== org-mode section ==========
 
-(require 'org-superstar)
+;; (require 'org-superstar)
 
   ;; ;; Every non-TODO headline now have no bullet
   ;; (setq org-superstar-headline-bullets-list '("　"))
@@ -131,7 +135,7 @@
 
 
 
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+;; (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
 
 (dolist (face '((org-level-1 . 1.2)
@@ -202,12 +206,15 @@ Version: 2023-06-26"
 
 ;; ================================================== all-the-icons
 
+(require 'org-bullets)
 
 (add-hook 'powershell-mode-hook 'electric-pair-mode)
 (add-hook 'org-mode-hook 'electric-pair-mode)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
 (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 ;;(add-hook 'focus-in-hook (lambda () (revert-buffer)))
+(setq org-bullets-bullet-list '("◉" "‣" "⁃" "∙"))
 
 
 (load-file "~/.config/emacs/my_navigation/init_navigation.el")

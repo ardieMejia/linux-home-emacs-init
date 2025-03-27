@@ -1,3 +1,5 @@
+(drag-stuff-global-mode 1)
+
 
 (defun my-grep-collective()
   "felt the need to use my own grep"
@@ -120,6 +122,15 @@
   (interactive)
   "my transient to-do"
    (find-file "/home/ardie/Documents/my_notes/my-org-files/transient.org"))
+;; no global binding
+
+
+;; ========== open work diary ==========
+(defun my-open-python-diary ()
+  (interactive)
+  "my transient to-do"
+  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2021/PythonDiary.org"))
+
 ;; no global binding
 
 

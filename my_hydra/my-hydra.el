@@ -27,11 +27,10 @@
   "file hydra"
   (";" (insert ";") :column "insert ;")
   ("q" nil "quit")    
-  ("s" my-open-work-diary "stuff_i_installed_at_work.org" :column "files" )
-  ("t" my-open-transient-todo "my-open-transient-todo")
+  ("t" my-open-transient-todo "my-open-transient-todo" :column "files" )
   ("i" my-open-init-28  "init_28.el")
   ("j" my-open-daily-java "daily_java.org")
-  ("p" my-open-password "password")
+  ("p" my-open-python-diary "Python Diary")
   ("r" my-open-general-zoho "Zoho" :column "sites")
   ("w" my-open-word-convert "word convert from html")
   ("y" my-open-yammer "yammer")
@@ -52,7 +51,7 @@
 	 (switch-to-buffer (other-buffer))
 	 (my-b-hydra/body)
 	 )   
-   "open last visited buffer" :column "navigation")
+   "open last visited buffer" :column "navigation 1")
   ;; read only doesnt work properly,  not sure why it works for the original code
   ;; ("x" (progn
   ;; 	 (read-only-mode buffer-file-name)
@@ -73,27 +72,27 @@
   ("y" (progn
 	 (yank)
 	 (my-b-hydra/body))
-   "yank")
+   "yank" :column "navigation 2")
   ("<down>" (progn
-	 (next-line)
-	 (my-b-hydra/body))
-   "yank")
+	      (next-line)
+	      (my-b-hydra/body))
+   "")
   ("<up>" (progn
-	 (previous-line)
-	 (my-b-hydra/body))
-   "yank")
+	    (previous-line)
+	    (my-b-hydra/body))
+   "")
   ("<prior>" (progn
-	 (scroll-down-command)
-	 (my-b-hydra/body))
-   "yank")
+	       (scroll-down-command)
+	       (my-b-hydra/body))
+   "")
   ("<next>" (progn
-	 (scroll-up-command)
-	 (my-b-hydra/body))
-   "yank")
+	      (scroll-up-command)
+	      (my-b-hydra/body))
+   "" :column "navigation 3")
   ("RET" (progn
-	 (newline)
-	 (my-b-hydra/body))
-   "yank")
+	   (newline)
+	   (my-b-hydra/body))
+   "")
   ;; TODO: this doesnt work with progn
   ("x" read-only-mode "read-only-mode")
   ("0" delete-window "delete current window")
@@ -121,16 +120,26 @@
 	 (my-s-hydra/body)
 	 )
 
-   "select line forward" :column "line")
+   "select line forward" :column "1")
+
+  ("<down>" (progn
+	      (drag-stuff-down 1)
+	      (my-s-hydra/body))
+   "")
+  ("<up>" (progn
+	    (drag-stuff-up 1)
+	    (my-s-hydra/body))
+   "")
+  
   ("e" (progn
 	 (my-end-to-line)
 	 )
-   "from point to EOL" :column "line")
+   "from point to EOL" :column "2")
   ("u" (progn
 	 (my-unmark-line)
 	 (my-s-hydra/body)
 	 )
-   "unselect line back")
+   "unselect reverse" :column "3")
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
 	 nil
@@ -149,7 +158,7 @@
 	 (newline)
 	 (yank)
 	 ))
-   "duplicate into after reg")
+   "duplicate into after reg" :column "4")
 
   
 
@@ -159,7 +168,7 @@
 	   nil
 	   )
 	 (kill-region (region-beginning) (region-end))
-	 (kill-line)
+	 ;; (kill-line)
 	 nil
 	 )
    "kill")
@@ -171,7 +180,7 @@
        )
      (comment-dwim nil)
      nil)
-   "comment")
+   "comment" :column "5")
   ("q" 
    (progn (pop-mark)
 	  nil)
@@ -282,7 +291,7 @@
   :keymap (let ((map (make-sparse-keymap)))
 	    (define-key map
 	      ;; (kbd "C-c ;")
-	      (kbd "; '")
+	      (kbd "; s")
 	      'my-s-hydra/body) map))
 
 
@@ -306,5 +315,52 @@
 
 
 
+
+
+;; New web-mode only hydras. The first of many to come ====================
+
+(defhydra my-custom-web-hydra (:color blue) 
+  "file hydra"
+  (";" (insert ";") :column "insert ;")
+  ("q" nil "quit")    
+  ("a" (progn
+	 (web-mode-attribute-select)
+	 (my-custom-web-hydra/body))
+   
+   "attribute" :column "select")
+  ("e" (progn
+	 (web-mode-element-select)
+	 (my-custom-web-hydra/body))
+   "element")
+  ("k" (if mark-active
+	   (progn
+	     (if buffer-read-only (read-only-mode -1) nil)
+	     (kill-region (region-beginning) (region-end))
+	     nil)
+	 nil)
+   "kill")  
+  ("w" (if mark-active
+	   (kill-ring-save (region-beginning) (region-end))
+	 nil)
+   "save to ring")
+  )
+
+
+
+
+(define-minor-mode my-custom-web-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value nil
+  :global nil	
+  :lighter " my-custom-web"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map (kbd "; w") #'my-custom-web-hydra/body) ;; putting the # by habit
+	    (define-key map (kbd "TAB") #'my-web-indent)
+	      	    map))
+
+(add-hook 'web-mode-hook #'my-custom-web-mode)
 
 
