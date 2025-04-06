@@ -20,6 +20,12 @@
     (when x
       (funcall x))))
 
+(defhydra my-p-hydra 
+  (:color blue)
+  "projectile hydra"
+  ("q" hydra-pop "exit everything")    
+  ("p" (projectile-find-file)
+   "projectile find file" :column "1"))
 
 
 (defhydra my-fh-hydra
@@ -42,60 +48,13 @@
   )
 
 
-(defhydra my-b-hydra
+(defhydra my-x-hydra
   (:color blue)
   "buffer hydra"
   ("q" nil "quit")
   (";" nil "quit")
-  ("b" (progn
-	 (switch-to-buffer (other-buffer))
-	 (my-b-hydra/body)
-	 )   
-   "open last visited buffer" :column "navigation 1")
-  ;; read only doesnt work properly,  not sure why it works for the original code
-  ;; ("x" (progn
-  ;; 	 (read-only-mode buffer-file-name)
-  ;; 	 (my-b-hydra/body))
-  ;; 	 "read-only-mode"
-  ;; 	 )
-  ("k" (kill-buffer)
-   "kill buffer")
-  ("h" (progn
-	 (mark-whole-buffer)
-	 (my-b-hydra/body))
-   "mark whole buffer"
-   )
-  ("w" (progn
-	 (kill-ring-save (region-beginning) (region-end))
-	 (my-b-hydra/body))
-   "mark whole buffer")
-  ("y" (progn
-	 (yank)
-	 (my-b-hydra/body))
-   "yank" :column "navigation 2")
-  ("<down>" (progn
-	      (next-line)
-	      (my-b-hydra/body))
-   "")
-  ("<up>" (progn
-	    (previous-line)
-	    (my-b-hydra/body))
-   "")
-  ("<prior>" (progn
-	       (scroll-down-command)
-	       (my-b-hydra/body))
-   "")
-  ("<next>" (progn
-	      (scroll-up-command)
-	      (my-b-hydra/body))
-   "" :column "navigation 3")
-  ("RET" (progn
-	   (newline)
-	   (my-b-hydra/body))
-   "")
   ;; TODO: this doesnt work with progn
   ("x" read-only-mode "read-only-mode")
-  ("0" delete-window "delete current window")
   )
 
 
@@ -194,6 +153,22 @@
 
 ;; ==================== programmatically not as fun as calling hydras temporarily, such as this https://github.com/abo-abo/hydra/wiki/Nesting-Hydras
 
+
+;;;###autoload
+(define-minor-mode my-p-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-p"
+  ;; :keymap '(((kbd "C-c ;") . #'my-basic-hydra/body))
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      (kbd "; p")
+	      'my-p-hydra/body) map))
+
+
 ;;;###autoload
 (define-minor-mode my-fh-mode
   "A minor mode so that my key settings override annoying major modes."
@@ -209,17 +184,17 @@
 	      (kbd "; ;")
 	      'my-fh-hydra/body) map))
 
-(define-minor-mode my-b-mode
+(define-minor-mode my-x-mode
   "A minor mode so that my key settings override annoying major modes."
   ;; If init-value is not set to t, this mode does not get enabled in
   ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
   ;; More info: http://emacs.stackexchange.com/q/16693/115
   :init-value t
-  :lighter " my-b"
+  :lighter " my-x"
   :keymap (let ((map (make-sparse-keymap)))
 	    (define-key map
-	      (kbd "; b")
-	      'my-b-hydra/body) map))
+	      (kbd "; x")
+	      'my-x-hydra/body) map))
 
 
 
@@ -313,7 +288,21 @@
 (provide 'my-s-mode)
 
 
+;;;###autoload
+(define-globalized-minor-mode global-my-p-mode my-p-mode my-p-mode)
 
+;; https://github.com/jwiegley/use-package/blob/master/bind-key.el
+;; The keymaps in `emulation-mode-map-alists' take precedence over
+;; `minor-mode-map-alist'
+(add-to-list 'emulation-mode-map-alists `((my-p-mode . my-p-map)))
+
+;; Turn off the minor mode in the minibuffer
+(defun turn-off-my-p-mode ()
+  "Turn off my-p-mode."
+  (my-p-mode -1))
+(add-hook 'minibuffer-setup-hook #'turn-off-my-p-mode)
+
+(provide 'my-p-mode)
 
 
 
@@ -341,6 +330,10 @@
    "kill")  
   ("w" (if mark-active
 	   (kill-ring-save (region-beginning) (region-end))
+	 nil)
+   "save to ring")
+  ("r" (if mark-active
+	     (web-mode-element-wrap)
 	 nil)
    "save to ring")
   )

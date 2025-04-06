@@ -8,7 +8,7 @@
 	(pattern (read-from-minibuffer "enter the pattern, no regexp, simple"))
 	(fileExtension (read-from-minibuffer "enter file extension, no * or ."))
 	)
-    (compilation-start  (concat  "grep -ri \"" pattern "\" --include \*"  fileExtension " " default-directory) 'grep-mode)))
+    (compilation-start  (concat  "grep -ri \"" pattern "\" --include \\*"  fileExtension " *") 'grep-mode)))
 
 ;; ====================
 

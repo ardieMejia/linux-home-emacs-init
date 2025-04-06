@@ -1,3 +1,7 @@
+
+(setq my-mode-list-contrast '(eww-form-text hydra-face-blue  org-mode-line-clock-overrun diff-refine-added))
+
+
 (defun my-mode-line-generic-1()
   (interactive)
 (force-mode-line-update)
@@ -9,16 +13,16 @@
 	   ;;     (propertize "Re" 'face 'shr-h1)
 	   ;;   (propertize "Wr" 'face 'shr-h1))
 	   (if buffer-read-only
-	       (propertize "Re " 'face 'eww-form-text)
-	     (propertize "Wr " 'face 'hydra-face-blue)
+	       (propertize "Re " 'face (car my-mode-list-contrast))
+	     (propertize "Wr " 'face (nth 1 my-mode-list-contrast))
 	     )
 	   
 	   )
 	   
 	  (:eval (propertize "%05b " 'face
 		  (if (buffer-modified-p)
-		      'org-mode-line-clock-overrun
-		    'diff-refine-added)))
+		      (nth 2 my-mode-list-contrast)
+		    (nth 3 my-mode-list-contrast))))
 	  " -- "
 	  (:eval (propertize mode-name 'face 'font-lock-string-face
 			     ))

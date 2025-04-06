@@ -80,6 +80,7 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src html"))
 (add-to-list 'org-structure-template-alist '("p" . "src python"))
 (add-to-list 'org-structure-template-alist '("j" . "src javascript"))
+(add-to-list 'org-structure-template-alist '("sc" . "src css"))
 ;; (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
 ;; (add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
 ;; (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
