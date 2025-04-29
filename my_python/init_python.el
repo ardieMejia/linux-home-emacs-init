@@ -1,4 +1,12 @@
 
+;; https://ddavis.io/blog/emacs-python-lsp/
+;; https://fredrikmeyer.net/2020/08/26/emacs-python-venv.html
+(use-package pyvenv
+  :ensure t
+  :init
+  (setenv "WORKON_HOME" "~/.pyenv/versions"))
+
+
 
 (defun my-flush-lines ()
   (interactive)

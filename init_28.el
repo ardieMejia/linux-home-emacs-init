@@ -169,11 +169,7 @@
 
 (load-file "~/.config/emacs/my_modes/my_mode.el")
 
-(use-package magik-mode
-  :ensure t
-  :config
-  (magik-global-bindings)
-  (magik-menu-set-menus))
+
 
 
 

@@ -46,15 +46,11 @@
 
 
 
-(add-hook 'magik-mode-hook 'my-mode-line-generic-1)
+
 
 (add-hook 'python-mode-hook 'my-mode-line-generic-1)
 
 (add-hook 'org-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'magik-product-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'magik-module-mode-hook 'my-mode-line-generic-1)
 
 (add-hook 'emacs-lisp-mode-hook 'my-mode-line-generic-1)
 

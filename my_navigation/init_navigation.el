@@ -43,8 +43,8 @@
         (pattern (read-from-minibuffer "enter the filename, simple regexp, like *sOmEnAmE*"))
 	)
     (compilation-start  (concat  "find " default-directory " -iname \*" pattern "\*") 'grep-mode)))
-    
-  
+
+
 
 (global-set-key (kbd "C-c m f") 'my-find-collective)
 
@@ -62,17 +62,24 @@
 
 (global-set-key (kbd "C-c m , d") 'my-copy-directory)
 
+
+
 (defun my-mark-line ()
   (interactive)
   "my own mark lien"
-  (if mark-active
-      (progn
-	(next-line)      
-	(move-end-of-line 1))
-    (progn
-      (move-beginning-of-line 1)
-      (set-mark (point))
-      (move-end-of-line 1))))
+  (if (not (eq (point) (point-max)))
+      (if mark-active
+	  (progn
+	    (next-line)      
+	    (move-end-of-line 1))
+	(progn
+	  (move-beginning-of-line 1)
+	  (set-mark (point))
+	  (move-end-of-line 1)))
+    )
+  )
+
+
 
 (defun my-end-to-line ()
   (interactive)
@@ -88,7 +95,7 @@
       (progn
 	(previous-line)      
 	(move-end-of-line 1))))
-  
+
 
 
 (global-set-key (kbd "C-c l") 'my-mark-line)
@@ -121,7 +128,7 @@
 (defun my-open-transient-todo ()
   (interactive)
   "my transient to-do"
-   (find-file "/home/ardie/Documents/my_notes/my-org-files/transient.org"))
+  (find-file "/home/ardie/Documents/my_notes/my-org-files/transient.org"))
 ;; no global binding
 
 
@@ -218,7 +225,7 @@
 ;; ========== TODO: we need to replace agency fb
 ;; (defun my-emacs-life ()
 ;;   (interactive)
-  
+
 ;;   (dolist (face '((org-level-1 . 1.2)
 ;;                   (org-level-2 . 1.1)
 ;;                   (org-level-3 . 1.05)
@@ -229,13 +236,13 @@
 ;;                   (org-level-8 . 1.1)))
 ;;     ;; ----- previous value "Ioevka"
 ;;     (set-face-attribute (car face) nil :font "Jost" :weight 'medium :height (cdr face)))
-  
+
 ;;   ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
 ;;   (set-face-attribute 'org-level-1 nil :font "Agency FB" :weight 'medium :height 2.3 :foreground "VioletRed4")
 ;;   (set-face-attribute 'org-level-2 nil :font "Agency FB" :weight 'medium :height 1.5 :foreground "DodgerBlue1")
 ;;   (set-face-attribute 'org-level-3 nil :font "Garamond" :weight 'medium :height 1.4 :foreground "VioletRed4")
 ;;   (set-face-attribute 'org-level-4 nil :font "Arial" :weight 'medium :height 1.1  :foreground "DodgerBlue1")
-  
+
 ;;   (set-frame-parameter (selected-frame) 'internal-border-width 0)
 ;;   (set-frame-parameter (selected-frame) 'left-fringe 40)
 ;;   (set-frame-parameter (selected-frame) 'right-fringe 40)
@@ -262,10 +269,87 @@
   (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
   (setq var2 (string-replace ":" "" var1))
   (unhighlight-regexp var2)
-)
+  )
 
 (global-set-key (kbd "C-c u") 'my-unsymbol)
 
 
 
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
+
+
+
+
+
+
+
+;; ==================== key-chords ====================
+(require 'key-chord)
+(key-chord-mode 1)
+
+(key-chord-define-global "zx" 'previous-buffer)
+(key-chord-define-global ",." 'next-buffer)
+(key-chord-define-global "qw" 'undo)
+(key-chord-define-global "pj" 'dabbrev-expand)
+(key-chord-define-global "[]" '(lambda ()
+				 (interactive)
+				 ;; (print "asd")
+				 (display-buffer (get-buffer-create "*ardie-scratch*"))
+				 (other-window 1)))
+(key-chord-define-global "p[" 'delete-window)
+
+
+(setq key-chord-typing-speed-threshold 0.7)
+;; ==================== key-chords ====================
+
+
+;; ===== timestamp and datetime library TODO: to move somewhere else
+(require 'ts)
+
+
+;; ===== simple magick convert ===== Eg: direct from jpg to png
+(defun my-magick-convert ()
+  (interactive)
+  (let ((ardie-len-list (length (dired-get-marked-files))))
+    (if (eq 1 ardie-len-list)
+	(if (member (file-name-extension (car (dired-get-marked-files)))
+		    '("jpg" "png" "jpeg" "webp")		      
+		    )
+	    ;; (print " it workrs")
+	    
+	    ;; (call-process-shell-command
+	    (progn
+	      (let
+		  (
+		   (fileExtension (read-from-minibuffer "enter output img extension without . (Eg: jpg)"))
+		   )
+		
+		(start-process
+		 ;; "magick   /home/ardie/my-trash/temp_what/flask.png ~/Desktop/hahaha.png"
+		 "my-magick"
+		 "*my-magick*"
+		 "magick"
+		 (car (dired-get-marked-files))
+		 (concat "/home/ardie/Pictures/"
+			 (format "%s-%s-%s__" (ts-hour (ts-now)) (ts-minute (ts-now)) (ts-second (ts-now)))
+			 (file-name-sans-extension (file-name-nondirectory (car (dired-get-marked-files))))
+			 "."
+			 fileExtension)
+		 )
+		)
+	      (shell-command (concat "xdg-open /home/ardie/Pictures"))
+	      )
+	  (print "nope, wrong filetype as input")
+	  )
+      (print "command only works for single files")
+      )
+    )
+  )
+
+
+
+;; ========== TODO: one day we should also move this somewhere else
+
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "/home/ardie/my-trash")
+ 

@@ -43,7 +43,6 @@
   ("g" my-open-ge "ge")
   ("l" my-open-alteia-docs :column "alteia docs")
   ("a" my-open-alteia :column "alteia")
-  ("." my-c-hydra/body :column "copy hydras")
   ("x" read-only-mode "read-only-mode")     
   )
 
@@ -58,15 +57,7 @@
   )
 
 
-(defhydra my-c-hydra 
-  (:color blue)
-  "copy hydra"
-  ("." (insert ".") :column "insert .")
-  ("q" nil "quit")    
-  ("c" my-copy-password "copy word/passwords/etc.." :column "text copies")
-  ("f" my-magik-copy-defun "copy magik method")
-  ("l" my-copy-line "copy line")
-  )
+
 
 
 (defhydra my-s-hydra 
@@ -216,38 +207,10 @@
 
 ;; ========== copy hydra
 
-;;;###autoload
-(define-minor-mode my-c-mode
-  "A minor mode so that my key settings override annoying major modes."
-  ;; If init-value is not set to t, this mode does not get enabled in
-  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
-  ;; More info: http://emacs.stackexchange.com/q/16693/115
-  :init-value t
-  :lighter " my-c"
-  ;; :keymap '(((kbd "C-c ;") . #'my-basic-hydra/body))
-  :keymap (let ((map (make-sparse-keymap)))
-	    (define-key map
-	      ;; (kbd "C-c ;")
-	      (kbd "; .")
-	      'my-c-hydra/body) map))
 
 
 
-;;;###autoload
-(define-globalized-minor-mode global-my-c-mode my-c-mode my-c-mode)
 
-;; https://github.com/jwiegley/use-package/blob/master/bind-key.el
-;; The keymaps in `emulation-mode-map-alists' take precedence over
-;; `minor-mode-map-alist'
-(add-to-list 'emulation-mode-map-alists `((my-c-mode . my-c-map)))
-
-;; Turn off the minor mode in the minibuffer
-(defun turn-off-my-c-mode ()
-  "Turn off my-c-mode."
-  (my-c-mode -1))
-(add-hook 'minibuffer-setup-hook #'turn-off-my-c-mode)
-
-(provide 'my-c-mode)
 
 
 
