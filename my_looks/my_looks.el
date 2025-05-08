@@ -1,5 +1,12 @@
 
+
+
+
+
 (use-package emacs
+  :hook
+  (org-mode . visual-line-mode)
+  (org-mode . electric-pair-mode)
   :config
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
 
@@ -10,6 +17,8 @@
   ;; Maybe define some palette overrides, such as by using our presets
   (setq modus-themes-common-palette-overrides
         modus-themes-preset-overrides-cooler)
+
+
 
   ;; Load the theme of your choice.
   ;; (load-theme 'modus-vivendi)
@@ -55,8 +64,32 @@
     (set-face-attribute (car face) nil :font "Arial" :weight 'medium :height (cdr face)))
   
   ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
-  (set-face-attribute 'org-level-1 nil :font "Georgia:line-spacing:100" :weight 'medium :height 1.8)
-  (set-face-attribute 'org-level-2 nil :font "Garamond" :weight 'medium :height 1.4)
+  (set-face-attribute 'org-level-1 nil :font "LiberationSerif" :weight 'medium :height 1.8)
+  (set-face-attribute 'org-level-2 nil :font "LiberationSerif" :weight 'medium :height 1.4)
   (set-face-attribute 'org-level-3 nil :font "Georgia" :weight 'medium :height 1.2)
   (set-face-attribute 'org-level-4 nil :font "Georgia" :weight 'medium :height 1.1))
 
+
+(defun my-emacs-modus-o-tinted ()
+  (interactive)
+  (load-theme 'modus-operandi-tinted)
+    (setq my-mode-list-contrast '(tty-menu-disabled-face show-paren-match  cursor shadow))
+
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.2)
+                  (org-level-3 . 1.1)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    ;; ----- previous value "Ioevka"
+    (set-face-attribute (car face) nil :font "LiberationSerif" :weight 'medium :height (cdr face)))
+  ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
+  )
+
+
+(use-package display-line-numbers
+  :hook
+  (python-mode . display-line-numbers-mode)
+  )

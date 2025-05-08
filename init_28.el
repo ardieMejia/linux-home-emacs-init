@@ -50,7 +50,7 @@
 (load-file "~/.config/emacs/my_hydra/my-hydra.el")
 (load-file "~/.config/emacs/my_python/init_python.el")
 (load-file "~/.config/emacs/my-modeline/my-modeline.el")
-(load-file "~/.config/emacs/my_org_settings/my-sound.el")
+;; (load-file "~/.config/emacs/my_org_settings/my-sound.el")
 (load-file "~/.config/emacs/my_projectile/my-projectile.el")
 (load-file "~/.config/emacs/my_web/my_web_mode.el")
 (load-file "~/.config/emacs/my_looks/my_looks.el")
@@ -69,18 +69,38 @@
 (setq backup-directory-alist '(("." . "/home/ardie/.config/emacs/emacs_backup_files")))
 
 
-(visual-line-mode)
-(add-hook 'org-mode-hook 'visual-line-mode)
+
+;; (visual-line-mode)
+
+(use-package org-bullets
+  :hook
+  ;; (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("◉" "‣" "⁃" "∙"))
+  )
 
 
-(require 'org-tempo)
+
+
+(use-package org-mode
+  :defer t
+  :mode "\\.org$"
+  :init
+  (setq org-startup-folded t)
+  (add-to-list 'org-structure-template-alist '("el" . "src lisp"))
+  (add-to-list 'org-structure-template-alist '("sh" . "src html"))
+  (add-to-list 'org-structure-template-alist '("p" . "src python"))
+  (add-to-list 'org-structure-template-alist '("j" . "src javascript"))
+  (add-to-list 'org-structure-template-alist '("sc" . "src css"))
+  (setq org-indent-indentation-per-level 4)
+
+
+  )
+
+
 
 ;; (add-to-list 'org-structure-template-alist '("m" . "src magik"))
-(add-to-list 'org-structure-template-alist '("el" . "src lisp"))
-(add-to-list 'org-structure-template-alist '("sh" . "src html"))
-(add-to-list 'org-structure-template-alist '("p" . "src python"))
-(add-to-list 'org-structure-template-alist '("j" . "src javascript"))
-(add-to-list 'org-structure-template-alist '("sc" . "src css"))
 ;; (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
 ;; (add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
 ;; (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
@@ -91,7 +111,6 @@
 
 
 
-(setq org-startup-folded t)
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -100,7 +119,7 @@
 (setq recentf-menu-filter "recentf-sort-ascending")
 
 (run-at-time nil (* 5 60) 'recentf-save-list)
-(run-at-time nil (* 5 150) 'my-org-sound-randomizer)
+;; (run-at-time nil (* 5 150) 'my-org-sound-randomizer)
 
 
 (require 'multiple-cursors)
@@ -124,7 +143,7 @@
   ;; (setq org-superstar-leading-bullet ?　)
   ;; ;; Enable custom bullets for TODO items
 ;; (setq org-superstar-special-todo-items t)
-(setq org-indent-indentation-per-level 4)
+
   ;; (setq org-superstar-todo-bullet-alist
   ;;       '(("TODO" "☐　")
   ;;         ("NEXT" "✒　")
@@ -203,15 +222,25 @@ Version: 2023-06-26"
 
 ;; ================================================== all-the-icons
 
-(require 'org-bullets)
+
 
 (add-hook 'powershell-mode-hook 'electric-pair-mode)
-(add-hook 'org-mode-hook 'electric-pair-mode)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
 (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 ;;(add-hook 'focus-in-hook (lambda () (revert-buffer)))
-(setq org-bullets-bullet-list '("◉" "‣" "⁃" "∙"))
+
 
 
 (load-file "~/.config/emacs/my_navigation/init_navigation.el")
+
+
+(defun efs/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                   (time-subtract after-init-time before-init-time)))
+           gcs-done))
+
+(add-hook 'emacs-startup-hook #'efs/display-startup-time)
+

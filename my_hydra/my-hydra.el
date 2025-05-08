@@ -1,3 +1,4 @@
+
 ;; ==================== programmatically not as fun as calling hydras temporarily, such as this https://github.com/abo-abo/hydra/wiki/Nesting-Hydras
 ;; ----- one day we'll use this cool example
 ;; (defhydra my-s-hydra-child
@@ -137,6 +138,79 @@
    "quit")    
   )
 
+
+(defhydra my-word-hydra 
+  (:color blue)
+  "select hydra"
+  ("'" (insert "'") :column "insert '")
+  ;; ("q" hydra-pop "exit everything")
+  ("q" 
+   (progn (pop-mark)
+	  nil)
+   "quit") 
+  ("r" (progn
+	 (left-word)
+	 (set-mark (point))
+	 (right-word)
+	 (my-word-hydra/body)
+	 )
+
+   "select word under point" :column "1")
+
+  ("<left>"
+   (if mark-active
+       (progn
+	 
+	 (if (not (eq (point) (region-beginning)))
+	     (exchange-point-and-mark)
+	   )
+
+	 (goto-char (region-beginning))
+	 (left-word)
+
+	   
+
+	 (my-word-hydra/body)
+	 )
+     nil)
+   "")
+
+  
+  ("<right>"
+   (if mark-active
+       (progn
+	 
+
+	 (if (not (eq (point) (region-end)))
+	     (exchange-point-and-mark)
+	   )
+
+	 (goto-char (region-end))
+	 (right-word)
+	   
+
+	 (my-word-hydra/body)
+	 )
+     nil)
+   "")
+  ("y" (progn
+	 (my-symbol)
+	 (keyboard-quit)
+	 nil
+	 )
+   "")
+  ("u" (progn
+	 (my-unsymbol)
+	 (keyboard-quit)
+	 nil
+	 )
+   "")
+  ("w" (progn
+	 (kill-ring-save (region-beginning) (region-end))
+	 nil
+	 )
+   "")
+  )
 
 
 
@@ -320,3 +394,40 @@
 (add-hook 'web-mode-hook #'my-custom-web-mode)
 
 
+
+
+
+
+;; ========== global word minor mode for hydras.
+
+
+
+;;;###autoload
+(define-minor-mode my-word-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-word"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; r")
+	      'my-word-hydra/body) map))
+
+;;;###autoload
+(define-globalized-minor-mode global-my-word-mode my-word-mode my-word-mode)
+
+;; https://github.com/jwiegley/use-package/blob/master/bind-key.el
+;; The keymaps in `emulation-mode-map-alists' take precedence over
+;; `minor-mode-map-alist'
+(add-to-list 'emulation-mode-map-alists `((my-word-mode . my-word-map)))
+
+;; Turn off the minor mode in the minibuffer
+(defun turn-off-my-word-mode ()
+  "Turn off my-word-mode."
+  (my-word-mode -1))
+(add-hook 'minibuffer-setup-hook #'turn-off-my-word-mode)
+
+(provide 'my-word-mode)
