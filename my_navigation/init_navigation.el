@@ -135,8 +135,16 @@
 ;; ========== open work diary ==========
 (defun my-open-python-diary ()
   (interactive)
-  "my transient to-do"
+  "my python diary"
   (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2021/PythonDiary.org"))
+
+;; no global binding
+
+;; ========== open non python diary ==========
+(defun my-open-non-python-diary ()
+  (interactive)
+  "my non-python diary"
+  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2025/nonPythonDiary.org"))
 
 ;; no global binding
 
@@ -291,13 +299,35 @@
 (key-chord-define-global ",." 'next-buffer)
 (key-chord-define-global "qw" 'undo)
 (key-chord-define-global "pj" 'dabbrev-expand)
-(key-chord-define-global "[]" '(lambda ()
-				 (interactive)
-				 ;; (print "asd")
-				 (display-buffer (get-buffer-create "*ardie-scratch*"))
-				 (other-window 1)))
-(key-chord-define-global "p[" 'delete-window)
+;; ===== stupid escaping slashes, my brain hurts
+(key-chord-define-global "]\\" '(lambda ()
+                                  (interactive)
+                                  (if
+                                      (and
+				       (null (window-right (car (window-list))))
+				       (not (null (window-right (nth 1 (window-list)))))
+                                       )
+                                      (delete-window)
+				    (progn
+				      (display-buffer (get-buffer-create "*ardie-scratch*"))
+				      (other-window 1)
+				      )
+                                    )))
 
+(key-chord-define-global "p[" '(lambda ()
+                                 (interactive)
+                                 (if
+                                     (null (window-right (car (window-list))))
+                                     (other-window 1)
+                                   )))
+
+
+(key-chord-define-global "[]" '(lambda ()
+                                 (interactive)
+                                 (if
+                                     (null (window-right (nth 1 (window-list))))
+                                     (other-window 1)
+                                   )))
 
 (setq key-chord-typing-speed-threshold 0.7)
 ;; ==================== key-chords ====================
@@ -353,3 +383,15 @@
 (setq delete-by-moving-to-trash t)
 (setq trash-directory "/home/ardie/my-trash")
  
+
+;; this is rather forceful, but we need to make Emacs more pleasant
+(setq-default message-log-max nil)
+(kill-buffer "*Messages*")
+
+
+
+(use-package company
+  :config (setq company-idle-delay 0
+		company-minimum-prefix-length 1
+		company-tooltip-align-annotations t))
+(add-hook 'after-init-hook 'global-company-mode)

@@ -93,6 +93,7 @@
   (add-to-list 'org-structure-template-alist '("p" . "src python"))
   (add-to-list 'org-structure-template-alist '("j" . "src javascript"))
   (add-to-list 'org-structure-template-alist '("sc" . "src css"))
+  (add-to-list 'org-structure-template-alist '("m" . "src makefile-gmake"))
   (setq org-indent-indentation-per-level 4)
 
 

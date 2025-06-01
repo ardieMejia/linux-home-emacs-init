@@ -38,6 +38,7 @@
   ("i" my-open-init-28  "init_28.el")
   ("j" my-open-daily-java "daily_java.org")
   ("p" my-open-python-diary "Python Diary")
+  ("n" my-open-non-python-diary "non-Python Diary")
   ("r" my-open-general-zoho "Zoho" :column "sites")
   ("w" my-open-word-convert "word convert from html")
   ("y" my-open-yammer "yammer")
