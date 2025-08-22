@@ -64,18 +64,38 @@
 
 
 
+;; (defun my-mark-line ()
+;;   (interactive)
+;;   "my own mark lien"
+;;   (if (not (eq (point) (point-max)))
+;;       (if mark-active
+;; 	  (progn
+;; 	    (next-line)      
+;; 	    (move-end-of-line 1))
+;; 	(progn
+;; 	  (move-beginning-of-line 1)
+;; 	  (set-mark (point))
+;; 	  (move-end-of-line 1)))
+;;     )
+;;   )
+
+
 (defun my-mark-line ()
   (interactive)
   "my own mark lien"
-  (if (not (eq (point) (point-max)))
-      (if mark-active
-	  (progn
-	    (next-line)      
-	    (move-end-of-line 1))
-	(progn
-	  (move-beginning-of-line 1)
-	  (set-mark (point))
-	  (move-end-of-line 1)))
+  (if mark-active
+      (progn
+	(exchange-point-and-mark)
+	(next-line)
+	(move-end-of-line 1)
+	(exchange-point-and-mark)
+	)
+    (progn
+      (move-beginning-of-line 1)
+      (set-mark (point))
+      (move-end-of-line 1)
+      (exchange-point-and-mark)
+      )
     )
   )
 
@@ -89,6 +109,7 @@
     (move-end-of-line 1)))
 
 
+;; ===== delete this one?
 (defun my-unmark-line ()
   (interactive)
   (if mark-active
@@ -111,16 +132,16 @@
 
 
 
-(setq my-prev-buff-name "*scratch*")
-(defun my-previous-buffer ()
-  (interactive)
-  "my previous buffer "
-  ;; (find-file "c:/Users/ahmadardie.r/Documents/shared_emacs/my-org-files/misc/2023/stuff_i_installed_at_work.org"))
-  ;; (save-excursion
-  ;;     (switch-to-buffer (car (nthcdr 1 buffer-name-history)))
-  ;;   )
-  (switch-to-buffer (other-buffer))
-  )
+;; (setq my-prev-buff-name "*scratch*")
+;; (defun my-previous-buffer ()
+;;   (interactive)
+;;   "my previous buffer "
+;;   ;; (find-file "c:/Users/ahmadardie.r/Documents/shared_emacs/my-org-files/misc/2023/stuff_i_installed_at_work.org"))
+;;   ;; (save-excursion
+;;   ;;     (switch-to-buffer (car (nthcdr 1 buffer-name-history)))
+;;   ;;   )
+;;   (switch-to-buffer (other-buffer))
+;;   )
 ;; no global binding
 
 
@@ -129,6 +150,14 @@
   (interactive)
   "my transient to-do"
   (find-file "/home/ardie/Documents/my_notes/my-org-files/transient.org"))
+;; no global binding
+
+
+;; ========== open recent reading ==========
+(defun my-open-recent-reading ()
+  (interactive)
+  "my recent reading"
+  (find-file "/home/ardie/my-trash/delete/boids_py/working/vehicle.py"))
 ;; no global binding
 
 
@@ -259,13 +288,16 @@
 
 
 
-(setq my-symbol-numvar '("fringe" "hi-green" "mouse-drag-and-drop-region" "hi-aquamarine" "show-paren-match" "diff-indicator-removed" "hi-salmon" ))
+(setq my-symbol-numvar '("hi-green" "mouse-drag-and-drop-region" "hi-aquamarine" "show-paren-match" "diff-indicator-removed" "hi-salmon" ))
 (defun my-symbol ()
   (interactive)
   (setq my-symbol-numvar (append (cdr my-symbol-numvar)  (list (pop my-symbol-numvar))))
   (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
-  (setq var2 (string-replace ":" "" var1))
-  (highlight-phrase var2 (car my-symbol-numvar)))
+  (highlight-phrase var1 (car my-symbol-numvar))
+  (print (car my-symbol-numvar))
+  (pop-mark)
+  )
+
 
 (global-set-key (kbd "C-c y") 'my-symbol)
 
@@ -277,6 +309,7 @@
   (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
   (setq var2 (string-replace ":" "" var1))
   (unhighlight-regexp var2)
+  (pop-mark)
   )
 
 (global-set-key (kbd "C-c u") 'my-unsymbol)
@@ -328,6 +361,9 @@
                                      (null (window-right (nth 1 (window-list))))
                                      (other-window 1)
                                    )))
+
+
+
 
 (setq key-chord-typing-speed-threshold 0.7)
 ;; ==================== key-chords ====================
@@ -381,7 +417,12 @@
 ;; ========== TODO: one day we should also move this somewhere else
 
 (setq delete-by-moving-to-trash t)
-(setq trash-directory "/home/ardie/my-trash")
+
+(if (< emacs-major-version 29)
+    (setq trash-directory "/home/ardie/my-trash")
+  (setq trash-directory "/home/ardie/my-emacs-29-config/trash")
+  )
+
  
 
 ;; this is rather forceful, but we need to make Emacs more pleasant
@@ -391,7 +432,57 @@
 
 
 (use-package company
+  :init
+  (setq-default eglot-workspace-configuration
+                '((pylsp
+                   (plugins
+                    (pycodestyle (enabled . nil))
+                    (pyflakes (enabled . nil))
+                    (flake8 (enabled . nil))
+                    ))))
+  :hook ((python-ts-mode web-mode c++-mode) . company-mode)
   :config (setq company-idle-delay 0
 		company-minimum-prefix-length 1
-		company-tooltip-align-annotations t))
+		company-tooltip-align-annotations t)
+  (setq company-insertion-triggers nil)
+  :bind
+  (:map company-active-map
+	("<tab>" . company-complete-selection)
+	([return] . nil)    	      
+        ("RET"    . nil)    	
+	)
+  ;; (:map company-active-map
+  ;; 	)
+  ;; (dolist (key '("<return>" "RET"))
+  ;;   (define-key company-active-map (kbd key)
+  ;; 		`(menu-item nil company-complete
+  ;; 			    :filter ,(lambda (cmd)
+  ;; 				       (when (company-explicit-action-p)
+  ;; 					 cmd)))))
+  ;; (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+  ;; (define-key company-active-map (kbd "SPC") nil)
+  
+
+  ;; (setq company-auto-complete-chars nil)
+  )
+
 (add-hook 'after-init-hook 'global-company-mode)
+
+
+
+;; ===== we need dired stuff inside use-package
+(dirvish-override-dired-mode)
+
+(define-key dired-mode-map (kbd "M-<left>") 'dired-up-directory)
+
+(define-key dired-mode-map (kbd "M-<right>") 'dired-find-file)
+
+
+
+(use-package bookmark
+  :init
+  ;; pass
+  :config
+  (add-to-list 'bookmark-alist '("my downloads" (filename . "~/Downloads/")))
+    (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
+  )

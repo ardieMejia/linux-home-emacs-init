@@ -1,9 +1,10 @@
-(defun my-java-enter ()
+(defun ardie/add-semicolon-at-cpp ()
   (interactive)
+  (end-of-line)
   (insert ";")
-  (newline)
-  (c-indent-line-or-region)
+  ;; (c-indent-line-or-region)
 )
 
-(add-hook 'java-mode-hook
-          (lambda () (local-set-key (kbd "M-<return>") 'my-java-enter)))
+(add-hook 'c++-mode-hook
+          (lambda () (local-set-key (kbd "M-<return>") 'ardie/add-semicolon-at-cpp)))
+

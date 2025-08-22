@@ -1,3 +1,4 @@
+
 (require 'package)
 (setq package-enable-at-startup nil)
 
@@ -6,7 +7,6 @@
 (package-initialize)
 
 ;; https://www.sandeepnambiar.com/my-minimal-emacs-setup/
-
 
 
 ;; save history between sessions. Useful for magik-session
@@ -28,7 +28,10 @@
 
 
 ;; ========== save session
-(desktop-save-mode 1)
+(if (< emacs-major-version 29)
+    (desktop-save-mode 1)
+  (desktop-save-mode -1))
+
 
 
 ;; ========== 
@@ -41,33 +44,41 @@
 
 (require 'ox-publish)
 
-
-
+;; ===== once we are done with our EMACS 29 config, we can reduce error-level to from :warning to :error (or even :emergency, if youre daring)
+(if (< emacs-major-version 29)
+    (setq warning-minimum-level :error)
+  )
 
 
 (load-file "~/.config/emacs/my_templates.el")
 (load-file "~/.config/emacs/my_present/init_present.el")
-(load-file "~/.config/emacs/my_hydra/my-hydra.el")
-(load-file "~/.config/emacs/my_python/init_python.el")
+(if (< emacs-major-version 29)
+    (load-file "~/.config/emacs/my_hydra/my-hydra.el")
+  (load-file "~/.config/emacs/my_hydra/my-hydra-29.el")
+)
 (load-file "~/.config/emacs/my-modeline/my-modeline.el")
 ;; (load-file "~/.config/emacs/my_org_settings/my-sound.el")
 (load-file "~/.config/emacs/my_projectile/my-projectile.el")
 (load-file "~/.config/emacs/my_web/my_web_mode.el")
 (load-file "~/.config/emacs/my_looks/my_looks.el")
+(load-file "~/.config/emacs/my_python/init_python.el")
+
 ;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
 
 
 
 
-(condition-case xe
+(condition-case error
     (set-face-attribute 'default nil :font "Iosevka" :weight 'regular)
   ('error (progn (set-face-attribute 'default nil :font "Georgia" :weight 'regular)  "Iosevka failed, loading Georgia")))
 
 
 
-(setq backup-directory-alist '(("." . "/home/ardie/.config/emacs/emacs_backup_files")))
-
+(if (< emacs-major-version 29)
+    (setq backup-directory-alist '(("." . "/home/ardie/.config/emacs/emacs_backup_files")))  
+  (setq backup-directory-alist '(("." . "/home/ardie/my-emacs-29-config/emacs_backup_files")))  
+  )
 
 
 ;; (visual-line-mode)
@@ -88,8 +99,9 @@
   :mode "\\.org$"
   :init
   (setq org-startup-folded t)
-  (add-to-list 'org-structure-template-alist '("el" . "src lisp"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("sh" . "src html"))
+  (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
   (add-to-list 'org-structure-template-alist '("p" . "src python"))
   (add-to-list 'org-structure-template-alist '("j" . "src javascript"))
   (add-to-list 'org-structure-template-alist '("sc" . "src css"))
@@ -108,6 +120,7 @@
 ;; (add-to-list 'org-structure-template-alist '("j" . "src java"))
 ;; (add-to-list 'org-structure-template-alist '("sq" . "src sql"))
 ;; (add-to-list 'org-structure-template-alist '("x" . "src xml"))
+
 
 
 
@@ -226,8 +239,26 @@ Version: 2023-06-26"
 
 
 (add-hook 'powershell-mode-hook 'electric-pair-mode)
-
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
+(add-hook 'python-mode-hook 'electric-pair-mode)
+(add-hook 'python-ts-mode-hook 'electric-pair-mode)
+
+
+
+;; ========== electric-pair-mode FIX ==========
+;; ===== taken from this link:
+;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode))
+
+(defun my-inhibit-electric-pair-mode (char)
+  (not (member major-mode my-electic-pair-modes)))
+
+(setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
+;; ========== electric-pair-mode FIX ==========
+
+
+
+
 (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 ;;(add-hook 'focus-in-hook (lambda () (revert-buffer)))
 
@@ -245,3 +276,22 @@ Version: 2023-06-26"
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
+
+
+(if (< emacs-major-version 29)
+    (message "passing through")
+  (progn
+    (load-file "~/.config/emacs/my_treesitter/my-treesitter.el")
+    (load-file "~/.config/emacs/my_major_alist_overrides/major-alist.el")
+    (load-file "~/.config/emacs/my_lsp/my-lsp.el")
+    (load-file "~/.config/emacs/my_drill/my-drill.el")
+    )
+  )
+
+
+
+(put 'ardie/project-shell-command 'safe-local-variable #'stringp)
+
+
+
+(global-set-key (kbd "C-;") '(lambda () (interactive)(insert ";")))

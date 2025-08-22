@@ -25,7 +25,8 @@
       (normal-top-level-add-subdirs-to-load-path))
  
 
-    ;; (load-file "~/.config/emacs/init_28.el")
-    (message "asd"))
+    (load-file "~/.config/emacs/init_28.el")
+    ;; (message "asd")
+    )
     
   )

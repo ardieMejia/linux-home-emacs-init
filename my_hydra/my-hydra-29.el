@@ -1,3 +1,5 @@
+;; ==================== One day, all are hydras will use combobulate as a base
+
 
 ;; ==================== programmatically not as fun as calling hydras temporarily, such as this https://github.com/abo-abo/hydra/wiki/Nesting-Hydras
 ;; ----- one day we'll use this cool example
@@ -39,7 +41,7 @@
   ("j" my-open-daily-java "daily_java.org")
   ("p" my-open-python-diary "Python Diary")
   ("n" my-open-non-python-diary "non-Python Diary")
-  ("r" my-open-general-zoho "Zoho" :column "sites")
+  ("r" my-open-recent-reading "recent reading" :column "reading")
   ("w" my-open-word-convert "word convert from html")
   ("y" my-open-yammer "yammer")
   ("g" my-open-ge "ge")
@@ -67,10 +69,11 @@
   "select hydra"
   ("'" (insert "'") :column "insert '")
   ("q" hydra-pop "exit everything")    
-  ("s" (progn
-	 (my-mark-line)
-	 (my-s-hydra/body)
-	 )
+  ("s"
+     (progn
+       (my-mark-line)
+       (my-s-hydra/body)
+       )
 
    "select line forward" :column "1")
 
@@ -83,30 +86,41 @@
 	    (my-s-hydra/body))
    "")
   
-  ("e" (progn
-	 (my-end-to-line)
-	 )
-   "from point to EOL" :column "2")
-  ("u" (progn
-	 (my-unmark-line)
-	 (my-s-hydra/body)
-	 )
-   "unselect reverse" :column "3")
+  ;; ("e" (progn
+  ;; 	 (my-end-to-line)
+  ;; 	 )
+  ;;  "from point to EOL" :column "2")
+  ;; ("u" (progn
+  ;; 	 (my-unmark-line)
+  ;; 	 (my-s-hydra/body)
+  ;; 	 )
+  ;;  "unselect reverse" :column "2")
+  ("y"
+   (progn
+     (my-symbol)
+     )
+   "my-symbol" :column "2"
+   :exit t)
+  ("u"
+   (progn
+     (my-unsymbol)
+     (hydra-pop))
+   :exit t)
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
 	 nil
 	 )
    "save to ring")
 
-  ("y" 
+  ("p" 
    (if mark-active
        (progn
 	 (if buffer-read-only
 	     (read-only-mode -1)
 	   nil
 	   )
+	 (exchange-point-and-mark)
 	 (kill-ring-save (region-beginning) (region-end))
-	 (move-end-of-line 1)
 	 (newline)
 	 (yank)
 	 ))
@@ -133,6 +147,19 @@
      (comment-dwim nil)
      nil)
    "comment" :column "5")
+  ("f" ;; (comment-region (region-beginning) (region-end))
+   (if
+       (or (eq major-mode 'python-ts-mode) (eq major-mode 'python-mode))
+       (combobulate-python-envelope-nest-if-else)
+     )
+   ;; (progn
+   ;;   (if buffer-read-only
+   ;; 	 (read-only-mode -1)
+   ;;     nil
+   ;;     )
+   ;;   (comment-dwim nil)
+   ;;   nil)
+   "python env if-else")
   ("q" 
    (progn (pop-mark)
 	  nil)
@@ -140,23 +167,41 @@
   )
 
 
+
 (defhydra my-word-hydra 
-  (:color blue)
-  "select hydra"
-  ("'" (insert "'") :column "insert '")
-  ("q" hydra-pop "exit everything")
-  ("q" 
-   (progn (pop-mark)
-	  nil)
-   "quit") 
+  (:color purple)
+  "my combobulate hydra"
+
+
+  ;; I dont understand why 2 functions are allowed and still works
+  ("q"
+   (pop-mark)
+   (hydra-pop)
+   :exit t) 
+
   ("r" (progn
-	 (left-word)
+	 (backward-word)
 	 (set-mark (point))
-	 (right-word)
+	 (forward-word)
 	 (my-word-hydra/body)
 	 )
 
    "select word under point" :column "1")
+
+    ("p" 
+   (if mark-active
+       (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-ring-save (region-beginning) (region-end))
+	 (move-end-of-line 1)
+	 (newline)
+	 (yank)
+	 )
+     nil)
+   "duplicate into after reg" :column "4" :exit t)
 
   ("<left>"
    (if mark-active
@@ -167,53 +212,230 @@
 	   )
 
 	 (goto-char (region-beginning))
-	 (left-word)
-
-	   
+	 (backward-word)
 
 	 (my-word-hydra/body)
 	 )
      nil)
    "")
-
   
   ("<right>"
    (if mark-active
        (progn
 	 
-
 	 (if (not (eq (point) (region-end)))
 	     (exchange-point-and-mark)
 	   )
 
 	 (goto-char (region-end))
-	 (right-word)
-	   
+	 (forward-word)
 
 	 (my-word-hydra/body)
 	 )
      nil)
    "")
-  ("y" (progn
-	 (my-symbol)
-	 (keyboard-quit)
-	 nil
-	 )
-   "")
-  ("u" (progn
-	 (my-unsymbol)
-	 (keyboard-quit)
-	 nil
-	 )
-   "")
+  ("y"
+(progn
+     (my-symbol)
+     )
+"my-symbol" :column "2"
+   :exit t)
+  ("u"
+   (progn
+     (my-unsymbol)
+     (hydra-pop))
+   :exit t)
+  ;; ("u" (progn
+  ;; 	 (my-unsymbol)
+  ;; 	 (keyboard-quit)
+  ;; 	 nil
+  ;; 	 )
+  ;;  "")
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
+	 )
+   :exit t)
+    ("k" (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-region (region-beginning) (region-end))
+	 ;; (kill-line)
 	 nil
 	 )
-   "")
+   "kill")
+  ("c" ;; (comment-region (region-beginning) (region-end))
+   (progn
+     (if buffer-read-only
+	 (read-only-mode -1)
+       nil
+       )
+     (comment-dwim nil)
+     nil)
+   "comment" :column "5")
   )
 
 
+(defhydra my-1-hydra 
+  (:color purple)
+  "my goto top"
+
+
+  ("1" (progn
+	 (goto-line 1)
+	 )
+   :exit t)
+  )
+
+
+
+(defhydra my-sexp-hydra 
+  (:color purple)
+  "mark-sexp based shortcut, no arrows just t"
+
+
+  ;; options like :exit is funky, is not easy to find documentation, and took forever to figure out that :exit t, (instead of :exit nil) quits everything
+  ("q"
+   (progn
+   (hydra-pop)
+   (pop-mark)
+   nil
+     )
+   :exit t)
+    ;; ("q" hydra-pop "exit everything")    
+
+  ("t"
+   (if mark-active
+       (progn	 
+	 (forward-sexp)
+	 (my-sexp-hydra/body)
+	 )
+     (progn
+       (move-beginning-of-line nil)
+       (set-mark (point))
+       ;; (set-mark-command)
+       (my-sexp-hydra/body)
+       )
+     )
+   ;; (progn
+   ;; 	 (backward-sexp)
+   ;; 	 (set-mark (point))
+   ;; 	 (forward-sexp)
+   ;; 	 (my-sexp-hydra/body)
+   ;; 	 )
+
+   "select sexp under point" :column "1")
+
+  ("k" (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-region (region-beginning) (region-end))
+	 ;; (kill-line)
+	 nil
+	 )
+   "kill ":exit t)
+  ("c" ;; (comment-region (region-beginning) (region-end))
+   (progn
+     (if buffer-read-only
+	 (read-only-mode -1)
+       nil
+       )
+     (comment-dwim nil)
+     nil)
+   "comment sexp" :column "2" :exit t)
+
+  
+
+  
+  
+  ("s"
+   (progn
+     (my-symbol)
+     (hydra-pop))
+   "symbol sexp" :exit t
+   )
+  ("p" 
+   (if mark-active
+       (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-ring-save (region-beginning) (region-end))
+	 (move-end-of-line 1)
+	 (newline)
+	 (yank)
+	 ))
+   "duplicate into after reg" :column "4" :exit t)
+    ("y"
+   (progn
+     (my-symbol)
+     (hydra-pop))
+   :exit t)
+  ("u"
+   (progn
+     (my-unsymbol)
+     (hydra-pop))
+   "unsymbol sexp" :column "3")
+  ;; ("u" (progn
+  ;; 	 (my-unsymbol)
+  ;; 	 (keyboard-quit)
+  ;; 	 nil
+  ;; 	 )
+  ;;  "")
+  ("w" (progn
+	 (kill-ring-save (region-beginning) (region-end))
+	 )
+   :exit t)
+  ("<down>"
+   (when mark-active
+     (progn
+       (drag-stuff-down 1)
+       (my-sexp-hydra/body)
+       :exit t)
+     )
+   "down" :column "4")
+  ("<up>"
+   (when mark-active
+     (progn
+       (drag-stuff-up 1)
+       (my-sexp-hydra/body))
+     )
+   "up")
+
+  )
+
+
+(defhydra my-kill-buffer-hydra 
+  (:color purple)
+  "kill-buffer hydra, only 1 so far"
+  ("q"
+   (progn
+   (hydra-pop)
+   nil
+     )
+   :exit t)
+
+  ("k"
+          (progn
+	 (kill-buffer)
+	 )
+   "kill current buffer" :column "1")
+  )
+
+
+
+(defhydra my-swiper-hydra 
+  (:color purple)
+  "my swiper hydra"
+
+  ("q" (pop-mark) (hydra-pop) :exit t) 
+
+  ("i" (swiper-isearch (car swiper-history))
+   "SWIPER only" :column "1"))
 
 
 
@@ -344,6 +566,27 @@
 
 
 
+;; ========== global swiper minor mode for hydras.
+
+;;;###autoload
+(define-minor-mode my-swiper-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-swiper"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; i")
+	      'my-swiper-hydra/body) map))
+
+(add-hook 'python-ts-mode-hook #'my-swiper-mode)
+
+
+
+
 ;; New web-mode only hydras. The first of many to come ====================
 
 (defhydra my-custom-web-hydra (:color blue) 
@@ -359,6 +602,10 @@
 	 (web-mode-element-select)
 	 (my-custom-web-hydra/body))
    "element")
+  ("c" (progn
+	 (web-mode-element-content-select)
+	 (my-custom-web-hydra/body))
+   "content")
   ("k" (if mark-active
 	   (progn
 	     (if buffer-read-only (read-only-mode -1) nil)
@@ -370,10 +617,26 @@
 	   (kill-ring-save (region-beginning) (region-end))
 	 nil)
    "save to ring")
-  ("r" (if mark-active
-	     (web-mode-element-wrap)
-	 nil)
-   "save to ring")
+  ("r"
+   (progn
+     (move-beginning-of-line 1)
+     (insert "\n")
+     (save-excursion
+       (web-mode-forward-sexp 1)
+       (insert "\n")  
+       )
+     (previous-line)
+     (set-mark (point))
+     ;; (set-mark-command 1)
+     (web-mode-forward-sexp 1)
+     (next-line)
+     (web-mode-element-wrap)
+     )
+   
+   ;; (if mark-active
+   ;; 	     (web-mode-element-wrap)
+   ;; 	 nil)
+   "wrap element with HACKY indentation")
   )
 
 
@@ -417,18 +680,84 @@
 	      (kbd "; r")
 	      'my-word-hydra/body) map))
 
+
+
+
+(add-hook 'python-ts-mode-hook #'my-word-mode)
+
+
+
+
+
+
+
+
+
+
+;; ========== global sexp minor mode for hydras.
+
 ;;;###autoload
-(define-globalized-minor-mode global-my-word-mode my-word-mode my-word-mode)
+(define-minor-mode my-sexp-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-sexp"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; t")
+	      'my-sexp-hydra/body) map))
 
-;; https://github.com/jwiegley/use-package/blob/master/bind-key.el
-;; The keymaps in `emulation-mode-map-alists' take precedence over
-;; `minor-mode-map-alist'
-(add-to-list 'emulation-mode-map-alists `((my-word-mode . my-word-map)))
+(add-hook 'python-ts-mode-hook #'my-sexp-mode)
 
-;; Turn off the minor mode in the minibuffer
-(defun turn-off-my-word-mode ()
-  "Turn off my-word-mode."
-  (my-word-mode -1))
-(add-hook 'minibuffer-setup-hook #'turn-off-my-word-mode)
 
-(provide 'my-word-mode)
+
+
+
+
+;; ========== global kill-buffer minor mode for hydras.
+
+;;;###autoload
+(define-minor-mode my-kill-buffer-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-kill-buffer"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; k")
+	      'my-kill-buffer-hydra/body) map))
+
+(add-hook 'python-ts-mode-hook #'my-kill-buffer-mode)
+
+
+
+
+
+
+;; ========== global goto1 minor mode for hydras.
+
+;;;###autoload
+(define-minor-mode my-1-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-1"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; 1")
+	      'my-1-hydra/body) map))
+
+(add-hook 'python-ts-mode-hook #'my-1-mode)
+
+
+
+
