@@ -280,6 +280,84 @@ Falls back to `project-current' if PROJ is not specified."
   )
 
 
+
+
+(defun my-emacs-modus-haki ()
+  (interactive)
+
+  (setq my-mode-list-contrast '(tty-menu-disabled-face show-paren-match  modus-themes-intense-red shadow))
+
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-variable-pitch-ui t)
+  (setq modus-themes-custom-auto-reload t)
+  (setq modus-themes-disable-other-themes t)
+  (setq modus-themes-prompts '(italic bold))
+  (setq modus-themes-completions
+        '((matches . (extrabold))
+          (selection . (semibold italic text-also))))
+  (setq modus-themes-org-blocks 'gray-background)
+
+  (setq modus-themes-headings
+        '((1 . (variable-pitch 1.5))
+          (2 . (1.3))
+          (agenda-date . (1.3))
+          (agenda-structure . (variable-pitch light 1.8))
+          (t . (1.1))))
+
+  (setq modus-vivendi-palette-overrides
+        '(
+
+          (bg-main     "#000000")
+          (bg-dim      "#111111")
+          (bg-active   "#222222")
+          (bg-inactive "#333333")
+
+          (fg-main     "#ffffff")
+          (fg-dim      )
+          (bg-region "#288B57")
+          (fg-region "#FFFFFF")
+
+          (cursor      "#00ffff")
+          (warning     "#fafad2")
+
+          (bg-completion "#2e8b57")
+          (bg-region     bg-active)
+          (bg-tab-bar        bg-main)
+          (bg-tab-current    bg-active)
+          (bg-tab-other      bg-dim)
+          (fringe unspecified)
+          (bg-mode-line-active bg-dim)
+          (border-mode-line-active unspecified)
+          (bg-line-number-active  bg-main)
+          (bg-line-number-inactive  bg-main)
+          ))
+
+
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.2)
+                  (org-level-3 . 1.1)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    ;; ----- previous value "Ioevka"
+    (set-face-attribute (car face) nil :font "LiberationSerif" :weight 'medium :height (cdr face)))
+
+  ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
+  (set-face-attribute 'org-level-1 nil :font "LiberationSerif" :weight 'medium :height 1.4)
+  (set-face-attribute 'org-level-2 nil :font "LiberationSerif" :weight 'medium :height 1.3)
+  (set-face-attribute 'org-level-3 nil :font "Georgia" :weight 'medium :height 1.2)
+  (set-face-attribute 'org-level-4 nil :font "Georgia" :weight 'medium :height 1.1)
+
+
+  (load-theme 'modus-vivendi))
+
+
+
+
 (use-package display-line-numbers
   :hook
   (python-mode . display-line-numbers-mode)

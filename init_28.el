@@ -6,6 +6,8 @@
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
+(defvar ardie/all-compute-cfg-dir "~/.config/emacs/")
+
 ;; https://www.sandeepnambiar.com/my-minimal-emacs-setup/
 
 
@@ -50,18 +52,18 @@
   )
 
 
-(load-file "~/.config/emacs/my_templates.el")
-(load-file "~/.config/emacs/my_present/init_present.el")
+(load-file (concat ardie/all-compute-cfg-dir "my_templates.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_present/init_present.el"))
 (if (< emacs-major-version 29)
-    (load-file "~/.config/emacs/my_hydra/my-hydra.el")
-  (load-file "~/.config/emacs/my_hydra/my-hydra-29.el")
+    (load-file (concat ardie/all-compute-cfg-dir "my_hydra/my-hydra.el"))
+  (load-file (concat ardie/all-compute-cfg-dir "my_hydra/my-hydra-29.el"))
 )
-(load-file "~/.config/emacs/my-modeline/my-modeline.el")
+(load-file (concat ardie/all-compute-cfg-dir "my-modeline/my-modeline.el"))
 ;; (load-file "~/.config/emacs/my_org_settings/my-sound.el")
-(load-file "~/.config/emacs/my_projectile/my-projectile.el")
-(load-file "~/.config/emacs/my_web/my_web_mode.el")
-(load-file "~/.config/emacs/my_looks/my_looks.el")
-(load-file "~/.config/emacs/my_python/init_python.el")
+(load-file (concat ardie/all-compute-cfg-dir "my_projectile/my-projectile.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_web/my_web_mode.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.el"))
 
 ;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
@@ -76,7 +78,7 @@
 
 
 (if (< emacs-major-version 29)
-    (setq backup-directory-alist '(("." . "/home/ardie/.config/emacs/emacs_backup_files")))  
+    (setq backup-directory-alist '(("." . (concat ardie/all-compute-cfg-dir "emacs_backup_files"))))  
   (setq backup-directory-alist '(("." . "/home/ardie/my-emacs-29-config/emacs_backup_files")))  
   )
 
@@ -200,7 +202,7 @@
 
 
 
-(load-file "~/.config/emacs/my_modes/my_mode.el")
+(load-file (concat ardie/all-compute-cfg-dir "my_modes/my_mode.el"))
 
 
 
@@ -264,7 +266,7 @@ Version: 2023-06-26"
 
 
 
-(load-file "~/.config/emacs/my_navigation/init_navigation.el")
+(load-file (concat ardie/all-compute-cfg-dir "my_navigation/init_navigation.el"))
 
 
 (defun efs/display-startup-time ()
@@ -281,10 +283,10 @@ Version: 2023-06-26"
 (if (< emacs-major-version 29)
     (message "passing through")
   (progn
-    (load-file "~/.config/emacs/my_treesitter/my-treesitter.el")
-    (load-file "~/.config/emacs/my_major_alist_overrides/major-alist.el")
-    (load-file "~/.config/emacs/my_lsp/my-lsp.el")
-    (load-file "~/.config/emacs/my_drill/my-drill.el")
+    (load-file (concat ardie/all-compute-cfg-dir "my_treesitter/my-treesitter.el"))
+    (load-file (concat ardie/all-compute-cfg-dir "my_major_alist_overrides/major-alist.el"))
+    (load-file (concat ardie/all-compute-cfg-dir "my_lsp/my-lsp.el"))
+    (load-file (concat ardie/all-compute-cfg-dir "my_drill/my-drill.el"))
     )
   )
 
