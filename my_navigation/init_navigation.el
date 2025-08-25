@@ -1,3 +1,5 @@
+(defvar ardie/my-notes-dir "/home/ardie/Documents/my_notes/")
+
 (drag-stuff-global-mode 1)
 
 
@@ -149,7 +151,7 @@
 (defun my-open-transient-todo ()
   (interactive)
   "my transient to-do"
-  (find-file "/home/ardie/Documents/my_notes/my-org-files/transient.org"))
+  (find-file (concat ardie/my-notes-dir "my-org-files/transient.org")))
 ;; no global binding
 
 

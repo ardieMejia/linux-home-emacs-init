@@ -183,19 +183,41 @@
                 (org-level-7 . 1.1)
                 (org-level-8 . 1.1)))
   ;; ----- previous value "Ioevka"
-  (set-face-attribute (car face) nil :font "Jost" :weight 'medium :height (cdr face)))
+  
+  (condition-case error
+      (set-face-attribute (car face) nil :font "Jost" :weight 'medium :height (cdr face))
+    ('error (progn
+	      (set-face-attribute (car face) nil :font "Arial" :weight 'medium :height (cdr face))
+	      "Iosevka failed, loading Arial"))))
 
 ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
-(set-face-attribute 'org-level-1 nil :font "Jost ExtraBold" :weight 'medium :height 1.6)
-(set-face-attribute 'org-level-2 nil :font "Jost SemiBold" :weight 'medium :height 1.4)
-(set-face-attribute 'org-level-3 nil :font "Jost SemiBold Italic" :weight 'medium :height 1.2)
-(set-face-attribute 'org-level-4 nil :font "Jost" :weight 'medium :height 1.2)
+(condition-case error
+    (progn
+      (set-face-attribute 'org-level-1 nil :font "Jost ExtraBold" :weight 'medium :height 1.6)
+      (set-face-attribute 'org-level-2 nil :font "Jost SemiBold" :weight 'medium :height 1.4)
+      (set-face-attribute 'org-level-3 nil :font "Jost SemiBold Italic" :weight 'medium :height 1.2)
+      (set-face-attribute 'org-level-4 nil :font "Jost" :weight 'medium :height 1.2)
+      (set-face-attribute 'org-block nil :font "Iosevka" :weight 'medium :height 1.0)
+      (set-face-attribute 'org-block-begin-line nil :font "Iosevka" :slant 'italic :weight 'medium :height 1.0 :background "lightgray")
+      (set-face-attribute 'org-block-end-line nil :font "Iosevka" :slant 'italic :weight 'medium :height 1.0)
+      )
+  ('error (progn
+	    (progn
+	      (set-face-attribute 'org-level-1 nil :font "Arial" :weight 'medium :height 1.6)
+	      (set-face-attribute 'org-level-2 nil :font "Arial" :weight 'medium :height 1.4)
+	      (set-face-attribute 'org-level-3 nil :font "Arial" :weight 'medium :height 1.2)
+	      (set-face-attribute 'org-level-4 nil :font "Arial" :weight 'medium :height 1.2)
+	      (set-face-attribute 'org-block nil :font "Arial" :weight 'medium :height 1.0)
+	      (set-face-attribute 'org-block-begin-line nil :font "Arial" :slant 'italic :weight 'medium :height 1.0 :background "lightgray")
+	      (set-face-attribute 'org-block-end-line nil :font "Arial" :slant 'italic :weight 'medium :height 1.0)
+	      )
+	    "Iosevka failed, loading Arial")))
+
+
+
 
 
 ;; ----- Im sure theres better way to do this. That dolist example was quite cool
-(set-face-attribute 'org-block nil :font "Iosevka" :weight 'medium :height 1.0)
-(set-face-attribute 'org-block-begin-line nil :font "Iosevka" :slant 'italic :weight 'medium :height 1.0 :background "lightgray")
-(set-face-attribute 'org-block-end-line nil :font "Iosevka" :slant 'italic :weight 'medium :height 1.0)
 
 
 ;; ========== org-mode section ==========
