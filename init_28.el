@@ -78,7 +78,7 @@
 
 
 (if (< emacs-major-version 29)
-    (setq backup-directory-alist '(("." . (concat ardie/all-compute-cfg-dir "emacs_backup_files"))))  
+    (setq backup-directory-alist `(("." . ,(concat ardie/all-compute-cfg-dir "emacs_backup_files"))))  
   (setq backup-directory-alist '(("." . "/home/ardie/my-emacs-29-config/emacs_backup_files")))  
   )
 
