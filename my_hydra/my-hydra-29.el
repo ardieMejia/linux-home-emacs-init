@@ -68,49 +68,42 @@
   (:color blue)
   "select hydra"
   ("'" (insert "'") :column "insert '")
-  ("q" hydra-pop "exit everything")    
+  ("q" hydra-pop "exit everything" :column "1")    
   ("s"
      (progn
        (my-mark-line)
        (my-s-hydra/body)
        )
 
-   "select line forward" :column "1")
+   "select line forward" :column "2")
 
   ("<down>" (progn
 	      (drag-stuff-down 1)
 	      (my-s-hydra/body))
-   "")
+   "" :column "3")
   ("<up>" (progn
 	    (drag-stuff-up 1)
 	    (my-s-hydra/body))
-   "")
+   "" :column "4")
   
-  ;; ("e" (progn
-  ;; 	 (my-end-to-line)
-  ;; 	 )
-  ;;  "from point to EOL" :column "2")
-  ;; ("u" (progn
-  ;; 	 (my-unmark-line)
-  ;; 	 (my-s-hydra/body)
-  ;; 	 )
-  ;;  "unselect reverse" :column "2")
+
   ("y"
    (progn
      (my-symbol)
      )
-   "my-symbol" :column "2"
+   "my-symbol" :column "5"
    :exit t)
   ("u"
    (progn
      (my-unsymbol)
      (hydra-pop))
+   "" :column "6"
    :exit t)
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
 	 nil
 	 )
-   "save to ring")
+   "save to ring" :column "7")
 
   ("p" 
    (if mark-active
@@ -124,7 +117,7 @@
 	 (newline)
 	 (yank)
 	 ))
-   "duplicate into after reg" :column "4")
+   "duplicate into after reg" :column "8")
 
   
 
@@ -137,7 +130,7 @@
 	 ;; (kill-line)
 	 nil
 	 )
-   "kill")
+   "kill" :column "9")
   ("c" ;; (comment-region (region-beginning) (region-end))
    (progn
      (if buffer-read-only
@@ -146,7 +139,7 @@
        )
      (comment-dwim nil)
      nil)
-   "comment" :column "5")
+   "comment" :column "10")
   ("f" ;; (comment-region (region-beginning) (region-end))
    (if
        (or (eq major-mode 'python-ts-mode) (eq major-mode 'python-mode))
@@ -159,7 +152,7 @@
    ;;     )
    ;;   (comment-dwim nil)
    ;;   nil)
-   "python env if-else")
+   "python env if-else" :column "11")
   ("q" 
    (progn (pop-mark)
 	  nil)
@@ -175,14 +168,17 @@
 
   ;; I dont understand why 2 functions are allowed and still works
   ("q"
-   (pop-mark)
+   (progn
    (hydra-pop)
-   :exit t) 
+   (pop-mark)
+     )
+   :exit t)
+
 
   ("r" (progn
-	 (backward-word)
-	 (set-mark (point))
 	 (forward-word)
+	 (set-mark (point))
+	 (backward-word)
 	 (my-word-hydra/body)
 	 )
 
@@ -274,6 +270,14 @@
      (comment-dwim nil)
      nil)
    "comment" :column "5")
+  ("<down>" (progn
+	      (drag-stuff-right 1)
+	      nil)
+   "right" )
+  ("<up>" (progn
+	    (drag-stuff-left 1)
+	    nil)
+   "left")
   )
 
 

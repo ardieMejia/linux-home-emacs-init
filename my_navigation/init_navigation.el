@@ -487,4 +487,9 @@
   :config
   (add-to-list 'bookmark-alist '("my downloads" (filename . "~/Downloads/")))
     (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
+    (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/my_notes/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
   )
+
+
+(setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
+(setq org-drill-learn-fraction 0.3)

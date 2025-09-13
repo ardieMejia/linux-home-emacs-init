@@ -102,6 +102,8 @@
   :init
   (setq org-startup-folded t)
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("cp" . "src c++"))
+  (add-to-list 'org-structure-template-alist '("f" . "src forth"))
   (add-to-list 'org-structure-template-alist '("sh" . "src html"))
   (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
   (add-to-list 'org-structure-template-alist '("p" . "src python"))

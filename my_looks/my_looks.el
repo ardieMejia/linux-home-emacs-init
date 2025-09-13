@@ -1,4 +1,4 @@
-
+;; ==== personal reminder that this MIGHT NOT work in Emacs 28
 
 
 
@@ -69,14 +69,22 @@ Falls back to `project-current' if PROJ is not specified."
       (ardie/git-get-rev-parse amend-output)))
   
   
+  ;; (defun ardie/switch-d()
+  ;;   (let ((commit-hash (current-kill 0)))
+  ;;     (let
+  ;;         ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
+  ;;       (print switch-result)
+  ;;       (revert-buffer)
+  ;;       )
+      ;; ))
+  
   (defun ardie/switch-d()
-    (let ((commit-hash (current-kill 0)))
-      (let
-          ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
-        (print switch-result)
-        (revert-buffer)
-        )
-      ))
+  (let ((commit-hash (current-kill 0)))
+    (shell-command "git checkout .")
+    (let
+        ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
+      (print switch-result)
+      (revert-buffer))))
 
     ;; ===== discard short changes, back to current commit
   (global-set-key (kbd "C-<drag-mouse-8>") 'ardie/discard-unstaged-changes)
