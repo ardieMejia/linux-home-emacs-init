@@ -43,6 +43,11 @@
        "%b"))))
 
 
+;; ========== compilation-scroll-output has to be global, predictable
+(setq compilation-scroll-output t)
+
+
+
 
 (require 'ox-publish)
 
@@ -231,6 +236,36 @@
 
 
 
+(defun my-kdenlive-project ()
+  "Open new kdenlive, with my most important kdenlive files.
+
+Inspired by Xah Lee's blog
+URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
+"
+  (interactive)
+  ;; (shell-command (concat "xdg-open " default-directory))
+  (shell-command "wmctrl -s 1; xdg-open /home/ardie/Desktop/rubbish; /home/ardie/my-apps/kdenlive-21.04.3b-x86_64.appimage &")
+  )
+
+(global-set-key (kbd "C-c m k") 'my-kdenlive-project)
+
+
+
+(defun my-cv ()
+  "Start CV sending process.
+
+Inspired by Xah Lee's blog
+URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
+"
+  (interactive)
+  ;; (shell-command (concat "xdg-open " default-directory))
+  (shell-command "wmctrl -s 1; xdg-open /home/ardie/Documents/reading/CV/alive/supertemp/indeed_temp")
+  )
+
+(global-set-key (kbd "C-c m r") 'my-cv)
+
+
+
 
 
 ;; ===== xah lee open folder of current file or dired 
@@ -274,7 +309,7 @@ Version: 2023-06-26"
 ;; ========== electric-pair-mode FIX ==========
 ;; ===== taken from this link:
 ;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
-(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode))
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c++-ts-mode))
 
 (defun my-inhibit-electric-pair-mode (char)
   (not (member major-mode my-electic-pair-modes)))

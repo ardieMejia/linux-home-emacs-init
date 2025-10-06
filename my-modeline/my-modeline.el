@@ -76,5 +76,11 @@
 
 (add-hook 'c++-mode-hook 'my-mode-line-generic-1)
 
-(add-hook 'makefile-gmake-mode 'my-mode-line-generic-1)
+(add-hook 'makefile-gmake-mode-hook 'my-mode-line-generic-1)
+
+(add-hook 'c++-ts-mode-hook 'my-mode-line-generic-1)
+
+
+
+
 

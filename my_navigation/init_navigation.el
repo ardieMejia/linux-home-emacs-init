@@ -82,24 +82,30 @@
 ;;   )
 
 
-(defun my-mark-line ()
-  (interactive)
-  "my own mark lien"
-  (if mark-active
+
+  (defun my-mark-line ()
+    (interactive)
+    "my own mark lien"
+
+    (if mark-active
+        (progn
+          (exchange-point-and-mark)
+          (when
+              (not (equal (window-end) (point)))
+            (next-line)
+            (move-end-of-line 1)
+            )
+          (exchange-point-and-mark)
+          )
       (progn
-	(exchange-point-and-mark)
-	(next-line)
-	(move-end-of-line 1)
-	(exchange-point-and-mark)
-	)
-    (progn
-      (move-beginning-of-line 1)
-      (set-mark (point))
-      (move-end-of-line 1)
-      (exchange-point-and-mark)
+        (move-beginning-of-line 1)
+        (set-mark (point))
+        (move-end-of-line 1)
+        (exchange-point-and-mark)
+        )    
       )
+
     )
-  )
 
 
 
@@ -428,8 +434,8 @@
  
 
 ;; this is rather forceful, but we need to make Emacs more pleasant
-(setq-default message-log-max nil)
-(kill-buffer "*Messages*")
+;; (setq-default message-log-max nil)
+;; (kill-buffer "*Messages*")
 
 
 
@@ -488,6 +494,7 @@
   (add-to-list 'bookmark-alist '("my downloads" (filename . "~/Downloads/")))
     (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
     (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/my_notes/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
+    (add-to-list 'bookmark-alist '("my CV" (filename . "~/Documents/reading/CV/alive/supertemp/indeed_temp/")))
   )
 
 

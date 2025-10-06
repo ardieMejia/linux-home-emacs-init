@@ -161,7 +161,7 @@
 
 
 
-(defhydra my-word-hydra 
+  (defhydra my-word-hydra 
   (:color purple)
   "my combobulate hydra"
 
@@ -171,11 +171,13 @@
    (progn
    (hydra-pop)
    (pop-mark)
+   (jump-to-register ?a)
      )
    :exit t)
 
 
   ("r" (progn
+	 (set-register ?a (point-marker))
 	 (forward-word)
 	 (set-mark (point))
 	 (backward-word)
@@ -208,7 +210,10 @@
 	   )
 
 	 (goto-char (region-beginning))
-	 (backward-word)
+	 (if (or (eq ?\" (char-before)) (eq ?\( (char-before)) (eq ?\) (char-before)))
+	     (backward-char)
+	   (backward-word)
+	   )
 
 	 (my-word-hydra/body)
 	 )
@@ -224,7 +229,12 @@
 	   )
 
 	 (goto-char (region-end))
-	 (forward-word)
+	 (if
+	     (or (eq ?\" (char-after)) (eq ?\( (char-after)) (eq ?\) (char-after)))
+	     (forward-char)
+	   (forward-word)
+	   )
+
 
 	 (my-word-hydra/body)
 	 )
@@ -250,7 +260,7 @@
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
 	 )
-   :exit t)
+   "kill-save" :exit t)
     ("k" (progn
 	 (if buffer-read-only
 	     (read-only-mode -1)
@@ -260,7 +270,7 @@
 	 ;; (kill-line)
 	 nil
 	 )
-   "kill")
+   "kill" :exit t)
   ("c" ;; (comment-region (region-beginning) (region-end))
    (progn
      (if buffer-read-only
@@ -269,7 +279,7 @@
        )
      (comment-dwim nil)
      nil)
-   "comment" :column "5")
+   "comment" :column "5" :exit t)
   ("<down>" (progn
 	      (drag-stuff-right 1)
 	      nil)

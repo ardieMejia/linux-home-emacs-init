@@ -229,8 +229,8 @@ Falls back to `project-current' if PROJ is not specified."
     (set-face-attribute (car face) nil :font "Arial" :weight 'medium :height (cdr face)))
   
   ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly
-  (set-face-attribute 'org-level-1 nil :font "LiberationSerif" :weight 'medium :height 1.4)
-  (set-face-attribute 'org-level-2 nil :font "LiberationSerif" :weight 'medium :height 1.3)
+  (set-face-attribute 'org-level-1 nil :font "LiberationSerif" :weight 'bold :height 1.2)
+  (set-face-attribute 'org-level-2 nil :font "LiberationSerif" :weight 'medium :height 1.4)
   (set-face-attribute 'org-level-3 nil :font "Georgia" :weight 'medium :height 1.2)
   (set-face-attribute 'org-level-4 nil :font "Georgia" :weight 'medium :height 1.1))
 
