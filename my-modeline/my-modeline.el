@@ -80,6 +80,14 @@
 
 (add-hook 'c++-ts-mode-hook 'my-mode-line-generic-1)
 
+(add-hook 'csharp-mode-hook 'my-mode-line-generic-1)
+
+(add-hook 'csharp-ts-mode-hook 'my-mode-line-generic-1)
+
+(add-hook 'text-mode-hook 'my-mode-line-generic-1)
+
+
+
 
 
 

@@ -180,7 +180,12 @@ Falls back to `project-current' if PROJ is not specified."
   ;; Load the theme of your choice.
   ;; (load-theme 'modus-vivendi)
 
-  (define-key global-map (kbd "<f5>") #'modus-themes-toggle))
+  (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+  (require 'expand-region)
+
+  (require 'ox-reveal)
+
+  )
 
 (defun my-emacs-modus-vivendi ()
   (interactive)
@@ -240,7 +245,8 @@ Falls back to `project-current' if PROJ is not specified."
   (setq modus-operandi-palette-overrides
 	'(
 	  (comment red-intense)
-	  (bg-main "#faddd9")
+	  ;; (bg-main "#faddd9")
+	  (bg-main "#eceff4")
 	  (builtin magenta-intense)
 	  (variable cyan-intense)
 	  ))
@@ -371,3 +377,9 @@ Falls back to `project-current' if PROJ is not specified."
   (python-mode . display-line-numbers-mode)
   (c++-mode . display-line-numbers-mode)
   )
+
+;; (use-package plantuml
+;;   :hook
+;;   (python-mode . display-line-numbers-mode)
+;;   (c++-mode . display-line-numbers-mode)
+;;   )

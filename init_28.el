@@ -106,6 +106,7 @@
   :mode "\\.org$"
   :init
   (setq org-startup-folded t)
+  (add-to-list 'org-structure-template-alist '("hh" . "src haskell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("cp" . "src c++"))
   (add-to-list 'org-structure-template-alist '("f" . "src forth"))
@@ -116,7 +117,12 @@
   (add-to-list 'org-structure-template-alist '("sc" . "src css"))
   (add-to-list 'org-structure-template-alist '("m" . "src makefile-gmake"))
   (setq org-indent-indentation-per-level 4)
-
+  ;; (setq org-reveal-root "file:///home/ardie/my-trash/delete/reveal.js/")
+  (setq org-reveal-root "file:///home/ardie/Documents/reveal.js/")
+  (setq org-reveal-title-slide nil)
+  
+  (setq org-reveal-hlevel 2)
+  (setq org-plantuml-jar-path "~/.config/emacs/plantuml-1.2025.8.jar")
 
   )
 
@@ -244,7 +250,7 @@ URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 "
   (interactive)
   ;; (shell-command (concat "xdg-open " default-directory))
-  (shell-command "wmctrl -s 1; xdg-open /home/ardie/Desktop/rubbish; /home/ardie/my-apps/kdenlive-21.04.3b-x86_64.appimage &")
+  (async-shell-command "wmctrl -s 1; xdg-open /home/ardie/Desktop/rubbish; /home/ardie/my-apps/kdenlive-21.04.3b-x86_64.appimage &")
   )
 
 (global-set-key (kbd "C-c m k") 'my-kdenlive-project)
@@ -259,28 +265,65 @@ URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 "
   (interactive)
   ;; (shell-command (concat "xdg-open " default-directory))
-  (shell-command "wmctrl -s 1; xdg-open /home/ardie/Documents/reading/CV/alive/supertemp/indeed_temp")
+  (let ((ardie/current-desktop (getenv "XDG_CURRENT_DESKTOP")))
+    
+  (async-shell-command "wmctrl -s 1; caja /home/ardie/Documents/reading/CV/alive/supertemp/indeed_temp")
+  (async-shell-command "wmctrl -s 1; xdg-open /home/ardie/Documents/reading/CV/alive/supertemp/indeed_temp")
+    )
   )
 
 (global-set-key (kbd "C-c m r") 'my-cv)
 
+
+(defun ardie/open-haskell ()
+
+  (interactive)
+  (async-shell-command "wmctrl -s 1; xdg-open /home/ardie/Documents/my_notes/hardcoreSoftwareEngineering/langs/haskell/learnyouahaskell.pdf" ))
 
 
 
 
 ;; ===== xah lee open folder of current file or dired 
 ;; ========== TODO: the original allow smultiple files tp open. refer to link
+;; (defun _my-show-in-desktop ()
+;;   (interactive)
+;;   (let ((ardie/current-desktop (getenv "XDG_CURRENT_DESKTOP")))
+;;     (if (equal ardie/current-desktop "MATE")
+;;           (shell-command (concat "caja " default-directory))
+;;       (async-shell-command (concat "xdg-open " default-directory)))))
+
+
 (defun my-show-in-desktop ()
   "Open the current file or dired marked files in external app.
 When called in emacs lisp, if Fname is given, open that.
+
+Ardie: In Emacs, you are better served under start-process
+rather than async-shell-command
 
 URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 Created: 2019-11-04
 Version: 2023-06-26"
   (interactive)
-      (shell-command (concat "xdg-open " default-directory)))
+  (let ((ardie/current-desktop (getenv "XDG_CURRENT_DESKTOP")))
+
+    
+    (cond
+     ((equal ardie/current-desktop "MATE")
+          (shell-command (concat "caja " default-directory))
+	   )
+     ((equal ardie/current-desktop "ICEWM")
+          (async-shell-command (concat "pcmanfm " default-directory))
+	   )
+     (t
+	  (async-shell-command (concat "xdg-open " default-directory)))
+	   )
+
+    
+    ))
 
 (global-set-key (kbd "C-c m s d") 'my-show-in-desktop)
+
+
 
 
 ;; ================================================== all-the-icons
@@ -301,6 +344,7 @@ Version: 2023-06-26"
 
 (add-hook 'powershell-mode-hook 'electric-pair-mode)
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
+(add-hook 'c++-mode-hook 'electric-pair-mode)
 (add-hook 'python-mode-hook 'electric-pair-mode)
 (add-hook 'python-ts-mode-hook 'electric-pair-mode)
 
@@ -309,7 +353,7 @@ Version: 2023-06-26"
 ;; ========== electric-pair-mode FIX ==========
 ;; ===== taken from this link:
 ;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
-(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c++-ts-mode))
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode))
 
 (defun my-inhibit-electric-pair-mode (char)
   (not (member major-mode my-electic-pair-modes)))
@@ -346,6 +390,7 @@ Version: 2023-06-26"
     (load-file (concat ardie/all-compute-cfg-dir "my_major_alist_overrides/major-alist.el"))
     (load-file (concat ardie/all-compute-cfg-dir "my_lsp/my-lsp.el"))
     (load-file (concat ardie/all-compute-cfg-dir "my_drill/my-drill.el"))
+    (load-file (concat ardie/all-compute-cfg-dir "my_abbrev/my-abbrev.el"))
     )
   )
 
@@ -356,3 +401,14 @@ Version: 2023-06-26"
 
 
 (global-set-key (kbd "C-;") '(lambda () (interactive)(insert ";")))
+
+
+
+;; ===== this might be very important
+;; (setq org-export-with-special-strings nil)
+
+;; (load-file (concat ardie/all-compute-cfg-dir "my_sphinx/init_sphinx.el"))
+
+
+;; ===== our early attempts at automating presentation slides, they are still generally "meh"
+;; (load-file (concat ardie/all-compute-cfg-dir "my_quarto/init-quarto.el"))

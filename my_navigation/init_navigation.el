@@ -81,31 +81,40 @@
 ;;     )
 ;;   )
 
-
-
-  (defun my-mark-line ()
-    (interactive)
-    "my own mark lien"
-
-    (if mark-active
-        (progn
-          (exchange-point-and-mark)
-          (when
-              (not (equal (window-end) (point)))
-            (next-line)
-            (move-end-of-line 1)
-            )
-          (exchange-point-and-mark)
-          )
-      (progn
-        (move-beginning-of-line 1)
-        (set-mark (point))
-        (move-end-of-line 1)
-        (exchange-point-and-mark)
-        )    
-      )
-
+(defun ardie/remove-trailing-leading-whitespace ()
+  (interactive)
+  (let ((new-text
+	 (string-trim (buffer-substring-no-properties (region-beginning)(region-end)))
+	 ))
+    (delete-region (region-beginning)(region-end))
+    (insert new-text)    
     )
+  
+  )
+
+(defun my-mark-line ()
+  (interactive)
+  "my own mark lien"
+
+  (if mark-active
+      (progn
+        (exchange-point-and-mark)
+        (when
+            (not (equal (window-end) (point)))
+          (next-line)
+          (move-end-of-line 1)
+          )
+        (exchange-point-and-mark)
+        )
+    (progn
+      (move-beginning-of-line 1)
+      (set-mark (point))
+      (move-end-of-line 1)
+      (exchange-point-and-mark)
+      )    
+    )
+
+  )
 
 
 
@@ -162,10 +171,17 @@
 
 
 ;; ========== open recent reading ==========
-(defun my-open-recent-reading ()
+(defun my-open-random-reading ()
   (interactive)
   "my recent reading"
-  (find-file "/home/ardie/my-trash/delete/boids_py/working/vehicle.py"))
+  ;; (find-file "/home/ardie/my-trash/delete/boids_py/working/vehicle.py")
+  (let ((ardie/files-i-want (directory-files "/home/ardie/Documents/my_notes/my-org-files/" t "/*org")))
+
+    (find-file
+     (nth (random (length ardie/files-i-want)) ardie/files-i-want)
+     )
+    )
+  )
 ;; no global binding
 
 
@@ -206,9 +222,19 @@
       completion-ignore-case t)
 
 
-(defun close-all-buffers ()
+(defun close-all-buffers()
   (interactive)
-  (mapc 'kill-buffer (buffer-list)))
+  (dolist (ardie/a-buffer (buffer-list) )
+    (let ((ardie/a-buffer-name
+	   (buffer-name ardie/a-buffer)
+	   ))
+      (if (not (equal ardie/a-buffer-name "*ardie-scratch*"))
+	  (kill-buffer ardie/a-buffer-name)
+	nil))))
+
+;; (defun close-all-buffers ()
+;;   (interactive)
+;;   (mapc 'kill-buffer (buffer-list)))
 
 
 ;; ========== TODO ==========
@@ -306,6 +332,15 @@
   (pop-mark)
   )
 
+(defun my-symbol-no-pop ()
+  (interactive)
+  (setq my-symbol-numvar (append (cdr my-symbol-numvar)  (list (pop my-symbol-numvar))))
+  (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
+  (highlight-phrase var1 (car my-symbol-numvar))
+  (print (car my-symbol-numvar))
+
+  )
+
 
 (global-set-key (kbd "C-c y") 'my-symbol)
 
@@ -333,6 +368,32 @@
 
 
 ;; ==================== key-chords ====================
+(defun ardie/open-custom-scratch-if-nexist()
+  (interactive)
+  (if
+      (and
+       (null (window-right (car (window-list))))
+       (not (null (window-right (nth 1 (window-list)))))
+       )
+                                      (delete-window)
+    (progn
+      (display-buffer (get-buffer-create "*ardie-scratch*"))
+      (other-window 1)
+      )))
+
+(defun ardie/switch-right-window()
+  (interactive)
+  (interactive)
+  (if
+      (null (window-right (nth 1 (window-list))))
+      (other-window 1)))
+
+(defun ardie/switch-left-window()
+  (interactive)
+  (if
+      (null (window-right (car (window-list))))
+      (other-window 1)))
+  
 (require 'key-chord)
 (key-chord-mode 1)
 
@@ -341,34 +402,12 @@
 (key-chord-define-global "qw" 'undo)
 (key-chord-define-global "pj" 'dabbrev-expand)
 ;; ===== stupid escaping slashes, my brain hurts
-(key-chord-define-global "]\\" '(lambda ()
-                                  (interactive)
-                                  (if
-                                      (and
-				       (null (window-right (car (window-list))))
-				       (not (null (window-right (nth 1 (window-list)))))
-                                       )
-                                      (delete-window)
-				    (progn
-				      (display-buffer (get-buffer-create "*ardie-scratch*"))
-				      (other-window 1)
-				      )
-                                    )))
+(key-chord-define-global "]\\" 'ardie/open-custom-scratch-if-nexist)
 
-(key-chord-define-global "p[" '(lambda ()
-                                 (interactive)
-                                 (if
-                                     (null (window-right (car (window-list))))
-                                     (other-window 1)
-                                   )))
+(key-chord-define-global "p[" 'ardie/switch-left-window)
 
+(key-chord-define-global "[]" 'ardie/switch-right-window)
 
-(key-chord-define-global "[]" '(lambda ()
-                                 (interactive)
-                                 (if
-                                     (null (window-right (nth 1 (window-list))))
-                                     (other-window 1)
-                                   )))
 
 
 
@@ -431,7 +470,7 @@
   (setq trash-directory "/home/ardie/my-emacs-29-config/trash")
   )
 
- 
+
 
 ;; this is rather forceful, but we need to make Emacs more pleasant
 ;; (setq-default message-log-max nil)
@@ -492,11 +531,15 @@
   ;; pass
   :config
   (add-to-list 'bookmark-alist '("my downloads" (filename . "~/Downloads/")))
-    (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
-    (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/my_notes/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
-    (add-to-list 'bookmark-alist '("my CV" (filename . "~/Documents/reading/CV/alive/supertemp/indeed_temp/")))
+  (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
+  (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/my_notes/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
+  (add-to-list 'bookmark-alist '("my CV" (filename . "~/Documents/reading/CV/alive/supertemp/indeed_temp/")))
   )
 
 
 (setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
 (setq org-drill-learn-fraction 0.3)
+
+
+(setq browse-url-browser-function 'browse-url-generic)
+(setq browse-url-generic-program "firefox")

@@ -41,7 +41,7 @@
   ("j" my-open-daily-java "daily_java.org")
   ("p" my-open-python-diary "Python Diary")
   ("n" my-open-non-python-diary "non-Python Diary")
-  ("r" my-open-recent-reading "recent reading" :column "reading")
+  ("r" my-open-random-reading "random reading" :column "random reading")
   ("w" my-open-word-convert "word convert from html")
   ("y" my-open-yammer "yammer")
   ("g" my-open-ge "ge")
@@ -161,7 +161,7 @@
 
 
 
-  (defhydra my-word-hydra 
+(defhydra my-word-hydra 
   (:color purple)
   "my combobulate hydra"
 
@@ -185,6 +185,32 @@
 	 )
 
    "select word under point" :column "1")
+  ("SPC"
+
+    (ardie/remove-trailing-leading-whitespace)
+
+
+   
+
+   "trim space" :column "2" :exit t)
+  ("s" (if mark-active
+	   (progn
+	     (er/expand-region 1)
+	     )
+	 (my-word-hydra/body)
+	 )
+
+   "select word under point" :column "3")
+
+  ("-" (progn
+	 (if (replace-string-in-region "-" "_")
+	     nil
+	   (replace-string-in-region "_" "-")	   
+	     )
+
+	 )
+
+   "select word under point" :column "5" :exit t)
 
     ("p" 
    (if mark-active
@@ -199,7 +225,7 @@
 	 (yank)
 	 )
      nil)
-   "duplicate into after reg" :column "4" :exit t)
+   "duplicate into after reg" :column "6" :exit t)
 
   ("<left>"
    (if mark-active
@@ -210,7 +236,13 @@
 	   )
 
 	 (goto-char (region-beginning))
-	 (if (or (eq ?\" (char-before)) (eq ?\( (char-before)) (eq ?\) (char-before)))
+	 (if (or (eq ?\" (char-before))
+		 (eq ?\( (char-before))
+		 (eq ?\) (char-before))
+		 (eq ?\; (char-before))
+		 (eq ?\! (char-before))
+		 (eq ?\/ (char-before))
+		 )
 	     (backward-char)
 	   (backward-word)
 	   )
@@ -218,7 +250,7 @@
 	 (my-word-hydra/body)
 	 )
      nil)
-   "")
+   "expand selection left" :column "7" )
   
   ("<right>"
    (if mark-active
@@ -230,7 +262,13 @@
 
 	 (goto-char (region-end))
 	 (if
-	     (or (eq ?\" (char-after)) (eq ?\( (char-after)) (eq ?\) (char-after)))
+	     (or (eq ?\" (char-after))
+		 (eq ?\( (char-after))
+		 (eq ?\) (char-after))
+		 (eq ?\; (char-after))
+		 (eq ?\! (char-after))
+		 (eq ?\/ (char-after))
+		 )
 	     (forward-char)
 	   (forward-word)
 	   )
@@ -239,18 +277,20 @@
 	 (my-word-hydra/body)
 	 )
      nil)
-   "")
+   "expand selection right" :column "8" )
   ("y"
 (progn
-     (my-symbol)
+  (my-symbol-no-pop)
+  (kill-ring-save (region-beginning) (region-end))
+  (jump-to-register ?a)
      )
-"my-symbol" :column "2"
+"my-symbol" :column "9"
    :exit t)
   ("u"
    (progn
      (my-unsymbol)
      (hydra-pop))
-   :exit t)
+   :column "10"  :exit t)
   ;; ("u" (progn
   ;; 	 (my-unsymbol)
   ;; 	 (keyboard-quit)
@@ -279,7 +319,7 @@
        )
      (comment-dwim nil)
      nil)
-   "comment" :column "5" :exit t)
+   "comment" :column "11" :exit t)
   ("<down>" (progn
 	      (drag-stuff-right 1)
 	      nil)
@@ -289,6 +329,38 @@
 	    nil)
    "left")
   )
+
+
+(defhydra my-upper-hydra 
+  (:color purple)
+  "my UPPER hydra"
+
+  ("q"
+   (progn
+     (hydra-pop)
+     )
+   :exit t)
+    ("a" (progn
+	   (left-word 1)
+	   (upcase-word 1))
+   "alto the word" :column "1" :exit t))
+
+
+(defhydra my-capitalize-hydra 
+  (:color purple)
+  "my capitalize hydra"
+
+  ("q"
+   (progn
+     (hydra-pop)
+     )
+   :exit t)
+
+  ("z" (progn
+	 (left-word 1)
+	 (capitalize-word 1)
+	 )
+   "capitaliZe region" :column "1" :exit t))
 
 
 (defhydra my-1-hydra 
@@ -654,6 +726,27 @@
   )
 
 
+(defhydra my-reveal-hydra 
+  (:color purple)
+  "my combobulate hydra"
+
+
+  ;; I dont understand why 2 functions are allowed and still works
+  ("q"
+   (progn
+   (hydra-pop)
+     )
+   :exit t)
+
+  
+  ("v" (progn
+	 (when (boundp 'ardie/is-org-present)
+	   (org-reveal-export-to-html)
+	   )
+	 )
+   
+   "select word under point" :column "1" :exit t)
+  )
 
 
 (define-minor-mode my-custom-web-mode
@@ -698,6 +791,56 @@
 
 
 (add-hook 'python-ts-mode-hook #'my-word-mode)
+
+
+
+
+;; ========== global UPPERCASE minor mode for hydras.
+
+
+
+;;;###autoload
+(define-minor-mode my-upper-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-upper"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      (kbd "; a")
+	      'my-upper-hydra/body) map))
+
+
+
+
+(add-hook 'python-ts-mode-hook #'my-upper-mode)
+
+
+
+
+;; ========== global capitaliZe minor mode for hydras.
+
+
+
+;;;###autoload
+(define-minor-mode my-capitalize-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-capitalize"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      (kbd "; z")
+	      'my-capitalize-hydra/body) map))
+
+
+
+
+(add-hook 'python-ts-mode-hook #'my-capitalize-mode)
 
 
 
@@ -775,3 +918,17 @@
 
 
 
+
+
+(define-minor-mode my-reveal-mode
+  "A minor mode so that my key settings override annoying major modes."
+  :init-value nil
+  :global nil
+  :lighter " my-word"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; v")
+	      'my-reveal-hydra/body) map))
+
+(add-hook 'org-mode-hook #'my-reveal-mode)
