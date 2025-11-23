@@ -57,18 +57,18 @@
   )
 
 
-(load-file (concat ardie/all-compute-cfg-dir "my_templates.el"))
-(load-file (concat ardie/all-compute-cfg-dir "my_present/init_present.el"))
+
+(load-file (concat ardie/all-compute-cfg-dir "my_present/init_present.elc"))
 (if (< emacs-major-version 29)
     (load-file (concat ardie/all-compute-cfg-dir "my_hydra/my-hydra.el"))
-  (load-file (concat ardie/all-compute-cfg-dir "my_hydra/my-hydra-29.el"))
+  (load-file (concat ardie/all-compute-cfg-dir "my_hydra/my-hydra-29.elc"))
 )
-(load-file (concat ardie/all-compute-cfg-dir "my-modeline/my-modeline.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my-modeline/my-modeline.elc"))
 ;; (load-file "~/.config/emacs/my_org_settings/my-sound.el")
-(load-file (concat ardie/all-compute-cfg-dir "my_projectile/my-projectile.el"))
-(load-file (concat ardie/all-compute-cfg-dir "my_web/my_web_mode.el"))
-(load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.el"))
-(load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_projectile/my-projectile.elc"))
+(load-file (concat ardie/all-compute-cfg-dir "my_web/my_web_mode.elc"))
+(load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.elc"))
+(load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.elc"))
 
 ;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
@@ -77,7 +77,8 @@
 
 
 (condition-case error
-    (set-face-attribute 'default nil :font "Iosevka" :weight 'regular)
+    ;; (set-face-attribute 'default nil :font "Iosevka" :weight 'regular)
+    (set-face-attribute 'default nil :font "Menlo" :weight 'regular :height 110)
   ('error (progn (set-face-attribute 'default nil :font "Georgia" :weight 'regular)  "Iosevka failed, loading Georgia")))
 
 

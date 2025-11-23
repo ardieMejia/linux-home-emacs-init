@@ -86,6 +86,10 @@
 
 (add-hook 'text-mode-hook 'my-mode-line-generic-1)
 
+(add-hook 'idlwave-mode-hook 'my-mode-line-generic-1)
+
+
+
 
 
 
