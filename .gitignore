@@ -1,0 +1,17 @@
+url/
+transient/
+recentf
+tramp
+projects
+history
+elpa/
+bookmarks
+auto-save-list/
+ac-comphist.dat
+.mc-lists.el
+*backup*
+pre_java_28.el
+init.el
+
+*.elc
+*.jar

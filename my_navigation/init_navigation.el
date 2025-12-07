@@ -197,7 +197,7 @@
 (defun my-open-non-python-diary ()
   (interactive)
   "my non-python diary"
-  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2025/nonPythonDiary.org"))
+  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2025/nonPythonDiary2.org"))
 
 ;; no global binding
 

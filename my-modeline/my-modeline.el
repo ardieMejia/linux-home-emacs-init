@@ -48,45 +48,15 @@
 
 
 
-(add-hook 'python-mode-hook 'my-mode-line-generic-1)
-;; ===== the problem now is that xxx-ts-modes are a hack, but i dont want to use alist as a hack
-(add-hook 'python-ts-mode-hook 'my-mode-line-generic-1) 
+(add-hook 'prog-mode-hook 'my-mode-line-generic-1)
+
+
 
 (add-hook 'org-mode-hook 'my-mode-line-generic-1)
 
-(add-hook 'emacs-lisp-mode-hook 'my-mode-line-generic-1)
+(add-hook 'ardie/special-org-hook 'my-mode-line-generic-1)
 
-(add-hook 'fundamental-mode-hook 'my-mode-line-generic-1)
 
-(add-hook 'nxml-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'powershell-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'mhtml-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'bat-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'java-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'web-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'js-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'c-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'c++-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'makefile-gmake-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'c++-ts-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'csharp-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'csharp-ts-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'text-mode-hook 'my-mode-line-generic-1)
-
-(add-hook 'idlwave-mode-hook 'my-mode-line-generic-1)
 
 
 

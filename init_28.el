@@ -8,6 +8,13 @@
 
 (defvar ardie/all-compute-cfg-dir "~/.config/emacs/")
 
+
+(setq plantuml-jar-path "~/.config/emacs/plantuml-1.2025.8.jar")
+(setq plantuml-output-type "png")
+(setq image-use-external-converter "magick")
+(setq plantuml-default-exec-mode 'jar)
+
+
 ;; https://www.sandeepnambiar.com/my-minimal-emacs-setup/
 
 
@@ -69,6 +76,7 @@
 (load-file (concat ardie/all-compute-cfg-dir "my_web/my_web_mode.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.elc"))
+(load-file (concat ardie/all-compute-cfg-dir "my_cpp/init-cpp.el"))
 
 ;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
@@ -238,7 +246,7 @@
 
 
 
-(load-file (concat ardie/all-compute-cfg-dir "my_modes/my_mode.el"))
+;; (load-file (concat ardie/all-compute-cfg-dir "my_modes/my_mode.el"))
 
 
 
@@ -345,21 +353,24 @@ Version: 2023-06-26"
 
 (add-hook 'powershell-mode-hook 'electric-pair-mode)
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
-(add-hook 'c++-mode-hook 'electric-pair-mode)
 (add-hook 'python-mode-hook 'electric-pair-mode)
 (add-hook 'python-ts-mode-hook 'electric-pair-mode)
+
+
 
 
 
 ;; ========== electric-pair-mode FIX ==========
 ;; ===== taken from this link:
 ;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
-(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode))
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode ardie/c++-mode ardie/special-org-mode))
 
 (defun my-inhibit-electric-pair-mode (char)
   (not (member major-mode my-electic-pair-modes)))
 
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
+
+
 ;; ========== electric-pair-mode FIX ==========
 
 

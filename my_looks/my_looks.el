@@ -61,7 +61,9 @@ Falls back to `project-current' if PROJ is not specified."
 	((current-commit-message (shell-command-to-string "git log -1 HEAD --format=%s")))
       (if (not (string-match-p "work and fuzz" current-commit-message))
 	  (progn
-	    (shell-command "git clean -fd")
+	    (if (y-or-n-p "creating work and fuzz from scratch, are you sure want to git clean -fd?")
+	      (shell-command "git clean -fd")
+	      )
 	    (shell-command "git commit --allow-empty -m \"work and fuzz\""))))
     (vc-git-command standard-output 1 "--all" "add")
     ;; (print "we added")

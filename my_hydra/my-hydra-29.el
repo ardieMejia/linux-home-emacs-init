@@ -524,6 +524,27 @@
    "SWIPER only" :column "1"))
 
 
+(defhydra my-dashline-hydra 
+  (:color purple)
+  "my dashline hydra"
+
+  ("q"
+   (progn
+     (hydra-pop)
+     )
+   :exit t)
+  
+  ("c"
+   (progn
+     (beginning-of-line)
+     (dotimes (i 50)
+       (insert "=")
+       )
+     (comment-line 1)
+     )   
+   "insert dashes" :column "1" :exit t))
+
+
 
 ;; ==================== programmatically not as fun as calling hydras temporarily, such as this https://github.com/abo-abo/hydra/wiki/Nesting-Hydras
 
@@ -932,3 +953,23 @@
 	      'my-reveal-hydra/body) map))
 
 (add-hook 'org-mode-hook #'my-reveal-mode)
+
+
+
+
+
+(define-minor-mode my-dashline-mode
+  "A minor mode so that my key settings override annoying major modes."
+  :init-value t
+  :lighter " my-dash"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      ;; (kbd "C-c ;")
+	      (kbd "; c")
+	      'my-dashline-hydra/body) map))
+
+;; (add-hook 'org-mode-hook #'my-dashline-mode)
+
+
+
+
