@@ -77,6 +77,8 @@
 (load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_cpp/init-cpp.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_rust/init-rust.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_common_lisp/init-common-lisp.el"))
 
 ;; (load-file "~/.config/emacs/my_advices/my_advices.el")
 
@@ -355,6 +357,9 @@ Version: 2023-06-26"
 (add-hook 'emacs-lisp-mode-hook 'electric-pair-mode)
 (add-hook 'python-mode-hook 'electric-pair-mode)
 (add-hook 'python-ts-mode-hook 'electric-pair-mode)
+(add-hook 'shell-mode-hook 'electric-pair-mode)
+(add-hook 'sly-mrepl-mode-hook 'electric-pair-mode)
+
 
 
 
@@ -363,7 +368,7 @@ Version: 2023-06-26"
 ;; ========== electric-pair-mode FIX ==========
 ;; ===== taken from this link:
 ;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
-(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode ardie/c++-mode ardie/special-org-mode))
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode ardie/c++-mode ardie/special-org-mode shell-mode sly-mrepl-mode))
 
 (defun my-inhibit-electric-pair-mode (char)
   (not (member major-mode my-electic-pair-modes)))

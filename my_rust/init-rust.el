@@ -1,6 +1,6 @@
 
 
-(defun ardie/add-semicolon-at-cpp ()
+(defun ardie/add-semicolon-at-rust ()
   (interactive)
   (end-of-line)
   (insert ";")
@@ -20,20 +20,24 @@
 
 
 
-(add-hook 'c++-mode-hook
-          (lambda () (local-set-key (kbd "M-<return>") 'ardie/add-semicolon-at-cpp)))
+;; (add-hook 'rust-mode-hook 
+;;           (lambda () (local-set-key (kbd "M-<return>") 'ardie/add-semicolon-at-rust)))
 
-(use-package c++-mode
+(use-package rust-mode
   :hook
-  (c++-mode . electric-pair-mode)
+  (rust-mode . electric-pair-mode)
   ;; (c++-mode . ardie/c++-add-electric-pairs)
 
-  ;; ===== why init works here? for offset, why? check docs, weird
-  :init								  
+  :bind (
+	 :map rust-mode-map
+	 ("M-<return>" . ardie/add-semicolon-at-rust)
+	 )
+
+
   
   
-  (setq c-basic-offset 2)
-  :config
+
+
 
 
   

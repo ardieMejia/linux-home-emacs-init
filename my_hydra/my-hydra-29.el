@@ -203,9 +203,9 @@
    "select word under point" :column "3")
 
   ("-" (progn
-	 (if (replace-string-in-region "-" "_")
+	 (if (replace-string-in-region "-" "_" (region-beginning) (region-end))
 	     nil
-	   (replace-string-in-region "_" "-")	   
+	   (replace-string-in-region "_" "-" (region-beginning) (region-end))	   
 	     )
 
 	 )
