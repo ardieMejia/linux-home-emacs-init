@@ -37,16 +37,9 @@
   (";" (insert ";") :column "insert ;")
   ("q" nil "quit")    
   ("t" my-open-transient-todo "my-open-transient-todo" :column "files" )
-  ("i" my-open-init-28  "init_28.el")
-  ("j" my-open-daily-java "daily_java.org")
   ("p" my-open-python-diary "Python Diary")
   ("n" my-open-non-python-diary "non-Python Diary")
-  ("r" my-open-random-reading "random reading" :column "random reading")
-  ("w" my-open-word-convert "word convert from html")
-  ("y" my-open-yammer "yammer")
-  ("g" my-open-ge "ge")
-  ("l" my-open-alteia-docs :column "alteia docs")
-  ("a" my-open-alteia :column "alteia")
+  ;; ("r" my-open-random-reading "random reading" :column "random reading")
   ("x" read-only-mode "read-only-mode")     
   )
 
@@ -75,37 +68,83 @@
        (my-s-hydra/body)
        )
 
-   "select line forward" :column "2")
+     "select line forward" :column "2")
+
+    ("u"
+     (if
+	 (equal (downcase (word-at-point t)) (word-at-point t))
+	 (progn
+	   (upcase-region (region-beginning) (region-end))
+	   )
+       (progn
+	 (downcase-region (region-beginning) (region-end))
+	 )
+       )
+     "uppercase line" :column "3")
+
+  ("z" (progn
+	 (capitalize-region (region-beginning) (region-end))
+	 )
+      "capitalize line" :column "4" :exit t)
+
+
+    ("-"
+   (let ((start (region-beginning))
+	 (end (region-end)))
+     (if (string-match " " (buffer-substring-no-properties start end))
+	 	 (replace-string-in-region " " "-" (region-beginning) (region-end))
+   (progn
+	 (if (replace-string-in-region "-" "_" (region-beginning) (region-end))
+	     nil
+	   (replace-string-in-region "_" "-" (region-beginning) (region-end))	   
+	     )
+
+	 )
+     ))   
+   "select word under point" :column "5" :exit t)
+
+    
+
+  
 
   ("<down>" (progn
 	      (drag-stuff-down 1)
 	      (my-s-hydra/body))
-   "" :column "3")
+   "" :column "6")
+  ("e" (progn
+	 (drag-stuff-down 1)
+	 (my-s-hydra/body))
+   "" :column "6")
+
   ("<up>" (progn
 	    (drag-stuff-up 1)
 	    (my-s-hydra/body))
-   "" :column "4")
+   "" :column "7")
+  ("a" (progn
+	    (drag-stuff-up 1)
+	    (my-s-hydra/body))
+   "" :column "7")
   
 
   ("y"
    (progn
      (my-symbol)
      )
-   "my-symbol" :column "5"
+   "my-symbol" :column "8"
    :exit t)
-  ("u"
+  ("n"
    (progn
      (my-unsymbol)
      (hydra-pop))
-   "" :column "6"
+   "" :column "9"
    :exit t)
   ("w" (progn
 	 (kill-ring-save (region-beginning) (region-end))
 	 nil
 	 )
-   "save to ring" :column "7")
+   "save to ring" :column "10")
 
-  ("p" 
+  ("d" 
    (if mark-active
        (progn
 	 (if buffer-read-only
@@ -117,7 +156,7 @@
 	 (newline)
 	 (yank)
 	 ))
-   "duplicate into after reg" :column "8")
+   "duplicate into after reg" :column "11")
 
   
 
@@ -130,7 +169,7 @@
 	 ;; (kill-line)
 	 nil
 	 )
-   "kill" :column "9")
+   "kill" :column "12")
   ("c" ;; (comment-region (region-beginning) (region-end))
    (progn
      (if buffer-read-only
@@ -139,7 +178,7 @@
        )
      (comment-dwim nil)
      nil)
-   "comment" :column "10")
+   "comment" :column "13")
   ("f" ;; (comment-region (region-beginning) (region-end))
    (if
        (or (eq major-mode 'python-ts-mode) (eq major-mode 'python-mode))
@@ -152,7 +191,7 @@
    ;;     )
    ;;   (comment-dwim nil)
    ;;   nil)
-   "python env if-else" :column "11")
+   "python env if-else" :column "14")
   ("q" 
    (progn (pop-mark)
 	  nil)
@@ -186,48 +225,51 @@
 
    "select word under point" :column "1")
   ("SPC"
-
-    (ardie/remove-trailing-leading-whitespace)
-
-
-   
-
+   (ardie/remove-trailing-leading-whitespace)
    "trim space" :column "2" :exit t)
+  ("u"
+   (if
+       (equal (downcase (word-at-point t)) (word-at-point t))
+       (progn
+	 (upcase-region (region-beginning) (region-end))
+	 )
+     (progn
+       (downcase-region (region-beginning) (region-end))
+       )
+     )
+   "uppercase region" :exit t)
+  ("z" (progn
+	 (capitalize-region (region-beginning) (region-end))
+	 )
+   "capitalize region" :exit t)
   ("s" (if mark-active
 	   (progn
 	     (er/expand-region 1)
 	     )
 	 (my-word-hydra/body)
 	 )
-
+   
    "select word under point" :column "3")
 
-  ("-" (progn
+  ("-"
+   (let ((start (region-beginning))
+	 (end (region-end)))
+     (if (string-match " " (buffer-substring-no-properties start end))
+	 	 (replace-string-in-region " " "-" (region-beginning) (region-end))
+   (progn
 	 (if (replace-string-in-region "-" "_" (region-beginning) (region-end))
 	     nil
 	   (replace-string-in-region "_" "-" (region-beginning) (region-end))	   
 	     )
 
 	 )
-
+     ))   
    "select word under point" :column "5" :exit t)
 
-    ("p" 
-   (if mark-active
-       (progn
-	 (if buffer-read-only
-	     (read-only-mode -1)
-	   nil
-	   )
-	 (kill-ring-save (region-beginning) (region-end))
-	 (move-end-of-line 1)
-	 (newline)
-	 (yank)
-	 )
-     nil)
-   "duplicate into after reg" :column "6" :exit t)
 
-  ("<left>"
+
+
+  ("a"
    (if mark-active
        (progn
 	 
@@ -252,7 +294,8 @@
      nil)
    "expand selection left" :column "7" )
   
-  ("<right>"
+
+  ("e"
    (if mark-active
        (progn
 	 
@@ -286,7 +329,7 @@
      )
 "my-symbol" :column "9"
    :exit t)
-  ("u"
+  ("n"
    (progn
      (my-unsymbol)
      (hydra-pop))
@@ -320,30 +363,167 @@
      (comment-dwim nil)
      nil)
    "comment" :column "11" :exit t)
-  ("<down>" (progn
-	      (drag-stuff-right 1)
-	      nil)
-   "right" )
-  ("<up>" (progn
-	    (drag-stuff-left 1)
-	    nil)
-   "left")
+
   )
 
 
 (defhydra my-upper-hydra 
   (:color purple)
-  "my UPPER hydra"
+  "my UPPER/LOWER hydra"
 
   ("q"
    (progn
      (hydra-pop)
      )
    :exit t)
-    ("a" (progn
-	   (left-word 1)
-	   (upcase-word 1))
+  ("u"
+   (let ((my-current-word (word-at-point t)))
+     (when my-current-word
+  (if
+      (equal (downcase my-current-word) my-current-word)
+      (progn
+	(left-word 1)
+	(upcase-word 1))
+      (progn
+	(left-word 1)
+	(downcase-word 1))
+    )
+	 )
+     )
+     
    "alto the word" :column "1" :exit t))
+
+
+
+
+(defun my-right-char-hydra/pre ()
+(print "asd")
+  )
+
+
+
+(defhydra my-right-char-hydra
+  ;; (:color purple :foreign-keys nil)
+  (:color purple :foreign-keys nil)
+  "my navigation hydra"
+
+  ("q"
+   (progn
+     (hydra-pop)
+     (makunbound 'ardie/right-char-count)
+     (set-cursor-color "#000000")
+     )
+   :exit t)
+  ("e"
+   (progn
+     (right-char)
+     (if (bound-and-true-p ardie/right-char-count)
+	 (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 7)
+	     (progn
+	       (set-cursor-color "#0096FF")
+	       (right-char (min (- ardie/right-char-count 7) 4))
+	       )
+	   nil
+	   )
+       (setq-local ardie/right-char-count 1)
+       )
+     (my-right-char-hydra/body)
+     )
+   
+   "right navigation" :column "1") ;; the :exit t, allows us to skip pressing "q"
+  ("a"
+   (progn
+     (makunbound 'ardie/right-char-count)
+     (left-char)
+     (my-right-char-hydra/body)
+     )
+
+   "left navigation" :column "2")
+  ("E" (progn
+	 (next-line)
+	 (if (bound-and-true-p ardie/right-char-count)
+	     (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 6)
+		 (progn
+		   (set-cursor-color "#0096FF")
+		   (next-line (min (- ardie/right-char-count 6) 4))
+		   )
+	       nil
+	       )
+	   (setq-local ardie/right-char-count 1)
+	   )
+	 (my-right-char-hydra/body)
+	 )
+   "" :column "3")
+  ("A" (progn
+	 (makunbound 'ardie/right-char-count)
+	 (previous-line)
+	 (my-right-char-hydra/body)
+	 )
+   "" :column "4")
+  )
+
+
+(defhydra my-left-char-hydra
+  ;; (:color purple :foreign-keys nil)
+  (:color purple :foreign-keys nil)
+  "my navigation hydra"
+
+  ("q"
+   (progn
+     (hydra-pop)
+     (makunbound 'ardie/left-char-count)
+     (set-cursor-color "#000000")
+     )
+   :exit t)
+  ("a"
+   (progn
+     (left-char)
+     (if (bound-and-true-p ardie/left-char-count)
+	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 7)
+	     (progn
+	       (set-cursor-color "#0096FF")
+	       (left-char (min (- ardie/left-char-count 7) 4))
+	       )
+	   nil
+	     )
+       (setq-local ardie/left-char-count 1)
+       )
+     (my-left-char-hydra/body)
+     )     
+   "left navigation" :column "1")
+  ("e"
+   (progn
+     (makunbound 'ardie/left-char-count)
+     (right-char)
+     (my-left-char-hydra/body)
+     )
+
+  
+   "right navigation" :column "2")
+  ("A"
+   (progn
+     (previous-line)
+     (if (bound-and-true-p ardie/left-char-count)
+	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 6)
+	     (progn
+	       (set-cursor-color "#0096FF")
+	       (previous-line (min (- ardie/left-char-count 6) 4))
+	       )
+	   nil
+	   )
+       (setq-local ardie/left-char-count 1)
+       )
+     (my-left-char-hydra/body)
+     )     
+   "left navigation" :column "3")
+    ("E"
+     (progn
+       (makunbound 'ardie/left-char-count)
+       (next-line)
+       (my-left-char-hydra/body)
+       )      
+     "right navigation" :column "4")
+    )
 
 
 (defhydra my-capitalize-hydra 
@@ -443,7 +623,7 @@
      (hydra-pop))
    "symbol sexp" :exit t
    )
-  ("p" 
+  ("d" 
    (if mark-active
        (progn
 	 (if buffer-read-only
@@ -476,7 +656,7 @@
 	 (kill-ring-save (region-beginning) (region-end))
 	 )
    :exit t)
-  ("<down>"
+  ("n"
    (when mark-active
      (progn
        (drag-stuff-down 1)
@@ -484,7 +664,7 @@
        :exit t)
      )
    "down" :column "4")
-  ("<up>"
+  ("p"
    (when mark-active
      (progn
        (drag-stuff-up 1)
@@ -830,13 +1010,56 @@
   :lighter " my-upper"
   :keymap (let ((map (make-sparse-keymap)))
 	    (define-key map
-	      (kbd "; a")
+	      (kbd "; u")
 	      'my-upper-hydra/body) map))
 
 
 
 
 (add-hook 'python-ts-mode-hook #'my-upper-mode)
+
+
+;; ========== global navigation to replace the bloated -b -f
+;; ========== we still cant avoid -b -f in other tools      
+
+;;;###autoload
+(define-minor-mode my-right-char-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-right-char"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      (kbd "; e")
+	      'my-right-char-hydra/body) map))
+
+(add-hook 'python-ts-mode-hook #'my-right-char-mode)
+
+
+
+
+;; ========== global navigation to replace the bloated -b -f
+;; ========== we still cant avoid -b -f in other tools      
+
+;;;###autoload
+(define-minor-mode my-left-char-mode
+  "A minor mode so that my key settings override annoying major modes."
+  ;; If init-value is not set to t, this mode does not get enabled in
+  ;; `fundamental-mode' buffers even after doing \"(global-my-mode 1)\".
+  ;; More info: http://emacs.stackexchange.com/q/16693/115
+  :init-value t
+  :lighter " my-left-char"
+  :keymap (let ((map (make-sparse-keymap)))
+	    (define-key map
+	      (kbd "; a")
+	      'my-left-char-hydra/body) map))
+
+
+
+
+(add-hook 'python-ts-mode-hook #'my-left-char-mode)
 
 
 
@@ -969,6 +1192,8 @@
 	      'my-dashline-hydra/body) map))
 
 ;; (add-hook 'org-mode-hook #'my-dashline-mode)
+
+
 
 
 

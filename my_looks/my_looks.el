@@ -71,18 +71,12 @@ Falls back to `project-current' if PROJ is not specified."
       (ardie/git-get-rev-parse amend-output)))
   
   
-  ;; (defun ardie/switch-d()
-  ;;   (let ((commit-hash (current-kill 0)))
-  ;;     (let
-  ;;         ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
-  ;;       (print switch-result)
-  ;;       (revert-buffer)
-  ;;       )
-      ;; ))
+
   
   (defun ardie/switch-d()
   (let ((commit-hash (current-kill 0)))
-    (shell-command "git checkout .")
+    ;; (shell-command "git checkout .") ;; if restore doesnt work, we replace it back with old git checkout .
+    (shell-command "git restore .")
     (let
         ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
       (print switch-result)
@@ -187,6 +181,13 @@ Falls back to `project-current' if PROJ is not specified."
 
   (require 'ox-reveal)
 
+
+
+  ;; ==================================================  
+  (define-key global-map (kbd "M-e") nil)
+  (define-key global-map (kbd "M-e") 'forward-word)
+  (define-key global-map (kbd "M-a") nil)
+  (define-key global-map (kbd "M-a") 'backward-word)
   )
 
 (defun my-emacs-modus-vivendi ()
@@ -281,15 +282,18 @@ Falls back to `project-current' if PROJ is not specified."
   (interactive)
   (load-theme 'modus-operandi-tinted)
   (setq my-mode-list-contrast '(tty-menu-disabled-face show-paren-match  cursor shadow))
-
-  (dolist (face '((org-level-1 . 1.4)
-                  (org-level-2 . 1.2)
-                  (org-level-3 . 1.1)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.0)
-                  (org-level-6 . 1.0)
-                  (org-level-7 . 1.0)
-                  (org-level-8 . 1.0)))
+  ;; (set-face-font 'default "Sacrifice Demo 14")
+  ;; ===== cursive monstrous, living on the edge
+  (set-face-font 'default "monoid:size=14")
+  ;; ===== only slightly weird, u always live on the edge anyway
+  (dolist (face '((org-level-1 . 1.5)
+                  (org-level-2 . 1.5)
+                  (org-level-3 . 1.4)
+                  (org-level-4 . 1.4)
+                  (org-level-5 . 1.3)
+                  (org-level-6 . 1.3)
+                  (org-level-7 . 1.2)
+                  (org-level-8 . 1.2)))
     ;; ----- previous value "Ioevka"
     (set-face-attribute (car face) nil :font "LiberationSerif" :weight 'medium :height (cdr face)))
   ;; ----- becoz we cant decide what we need for org-mode, our org is still ugly

@@ -7,6 +7,7 @@
 (package-initialize)
 
 (defvar ardie/all-compute-cfg-dir "~/.config/emacs/")
+(defvar ardie/my-notes-dir "/home/ardie/Documents/knowledge/")
 
 
 (setq plantuml-jar-path "~/.config/emacs/plantuml-1.2025.8.jar")
@@ -77,6 +78,8 @@
 (load-file (concat ardie/all-compute-cfg-dir "my_looks/my_looks.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_python/init_python.elc"))
 (load-file (concat ardie/all-compute-cfg-dir "my_cpp/init-cpp.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_c/init-c.el"))
+(load-file (concat ardie/all-compute-cfg-dir "my_cpp/qmake-mode.el")) ;; ===== downloaded from https://github.com/jobor/qmake-mode
 (load-file (concat ardie/all-compute-cfg-dir "my_rust/init-rust.el"))
 (load-file (concat ardie/all-compute-cfg-dir "my_common_lisp/init-common-lisp.el"))
 
@@ -115,6 +118,9 @@
 (use-package org-mode
   :defer t
   :mode "\\.org$"
+
+
+
   :init
   (setq org-startup-folded t)
   (add-to-list 'org-structure-template-alist '("hh" . "src haskell"))
@@ -134,6 +140,39 @@
   
   (setq org-reveal-hlevel 2)
   (setq org-plantuml-jar-path "~/.config/emacs/plantuml-1.2025.8.jar")
+
+
+  (setq org-use-speed-commands t)
+
+  ;; I have no idea why this goes in init?? when other use-package puts this in :config
+  
+  ;; (global-set-key (kbd "C-c C-'") 'ardie/org-enter-small)
+  ;; (global-set-key (kbd "C-c C-<return>") 'org-meta-return)
+  
+  ;; (defun ardie/org-enter-small ()
+  ;;   (interactive)
+  ;;   (print "testing")
+  ;;   (org-meta-return)
+  ;;   (org-metaright)
+  ;;   )
+
+  (define-key org-mode-map (kbd "M-h") nil)
+(define-key org-mode-map (kbd "M-h") 'org-metaleft)
+(define-key org-mode-map (kbd "M-j") nil)
+(define-key org-mode-map (kbd "M-j") 'org-metadown)
+(define-key org-mode-map (kbd "M-k") nil)
+(define-key org-mode-map (kbd "M-k") 'org-metaup)
+(define-key org-mode-map (kbd "M-l") nil)
+(define-key org-mode-map (kbd "M-l") 'org-metaright)
+(define-key org-mode-map (kbd "M-H") nil)
+(define-key org-mode-map (kbd "M-H") 'org-shiftmetaleft)
+(define-key org-mode-map (kbd "M-J") nil)
+(define-key org-mode-map (kbd "M-J") 'org-shiftmetadown)
+(define-key org-mode-map (kbd "M-K") nil)
+(define-key org-mode-map (kbd "M-K") 'org-shiftmetaup)
+(define-key org-mode-map (kbd "M-L") nil)
+(define-key org-mode-map (kbd "M-L") 'org-shiftmetaright)
+
 
   )
 
@@ -289,7 +328,16 @@ URL `http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html'
 (defun ardie/open-haskell ()
 
   (interactive)
-  (async-shell-command "wmctrl -s 1; xdg-open /home/ardie/Documents/my_notes/hardcoreSoftwareEngineering/langs/haskell/learnyouahaskell.pdf" ))
+  (setq open-haskell-string (concat "wmctrl -s 1; xdg-open " ardie/my-notes-dir "hardcoreSoftwareEngineering/langs/haskell/learnyouahaskell.pdf" ))
+  (async-shell-command open-haskell-string ))
+
+
+(defun ardie/open-c-expert ()
+
+  (interactive)
+  ;; (setq open-haskell-string (concat "wmctrl -s 1; xdg-open " ardie/my-notes-dir "hardcoreSoftwareEngineering/langs/haskell/learnyouahaskell.pdf" ))
+  (setq open-c-string (concat "wmctrl -s 1; xdg-open " ardie/my-notes-dir "hardcoreSoftwareEngineering/langs/C/expert-c-programming-deep-c-secrets.pdf" ))
+  (async-shell-command open-c-string ))
 
 
 
@@ -368,7 +416,7 @@ Version: 2023-06-26"
 ;; ========== electric-pair-mode FIX ==========
 ;; ===== taken from this link:
 ;; https://emacs.stackexchange.com/questions/13603/auctex-disable-electric-pair-mode-in-minibuffer-during-macro-definition
-(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode ardie/c++-mode ardie/special-org-mode shell-mode sly-mrepl-mode))
+(defvar my-electic-pair-modes '(emacs-lisp-mode powershell-mode python-mode python-ts-mode inferior-python-mode org-mode ardie/special-org javascript-mode js-mode rust-mode rust-ts-mode web-mode c++-mode c-mode c++-ts-mode ardie/c++-mode ardie/c-mode ardie/special-org-mode shell-mode sly-mrepl-mode csv-mode lisp-mode))
 
 (defun my-inhibit-electric-pair-mode (char)
   (not (member major-mode my-electic-pair-modes)))
@@ -417,7 +465,7 @@ Version: 2023-06-26"
 
 
 
-(global-set-key (kbd "C-;") '(lambda () (interactive)(insert ";")))
+
 
 
 

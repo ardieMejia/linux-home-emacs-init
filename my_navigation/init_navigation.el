@@ -1,4 +1,4 @@
-(defvar ardie/my-notes-dir "/home/ardie/Documents/my_notes/")
+
 
 (drag-stuff-global-mode 1)
 
@@ -105,6 +105,7 @@
           (move-end-of-line 1)
           )
         (exchange-point-and-mark)
+	;; (scroll-up-line)
         )
     (progn
       (move-beginning-of-line 1)
@@ -117,6 +118,19 @@
   )
 
 
+;; ===== 2026: hydra cursor advice fix
+
+(defun ardie/post-cursor-advice (num &optional character)
+  "My advice for `foo`."
+  ;; Example of around advice logic
+  (set-cursor-color "#000000")
+  (makunbound 'ardie/right-char-count)
+  (makunbound 'ardie/left-char-count)
+  )
+
+
+(advice-add 'self-insert-command :before #'ardie/post-cursor-advice)
+;; ==================================================
 
 (defun my-end-to-line ()
   (interactive)
@@ -175,13 +189,32 @@
   (interactive)
   "my recent reading"
   ;; (find-file "/home/ardie/my-trash/delete/boids_py/working/vehicle.py")
-  (let ((ardie/files-i-want (directory-files "/home/ardie/Documents/my_notes/my-org-files/" t "/*org")))
+  (let ((ardie/files-i-want (directory-files "/home/ardie/Documents/knowledge/my-org-files/" t "/*org")))
 
     (find-file
      (nth (random (length ardie/files-i-want)) ardie/files-i-want)
      )
     )
   )
+
+
+(defun my-open-random-reading ()
+  (interactive)
+  "my recent reading"
+  ;; (find-file "/home/ardie/my-trash/delete/boids_py/working/vehicle.py")
+  (let ((ardie/files-i-want (directory-files-recursively "/home/ardie/Documents/knowledge/my-org-files/" "/*org")))
+
+    (let     ((files-i-want-nth (mod (nth 1 (current-time)) (length ardie/files-i-want))))
+    (print
+     (nth files-i-want-nth ardie/files-i-want))
+    (find-file      (nth files-i-want-nth ardie/files-i-want))
+      )
+    ;; (find-file
+    ;;  (nth (random (length ardie/files-i-want)) ardie/files-i-want)
+    ;;  )
+
+    )
+  ) 
 ;; no global binding
 
 
@@ -189,7 +222,7 @@
 (defun my-open-python-diary ()
   (interactive)
   "my python diary"
-  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2021/PythonDiary.org"))
+  (find-file "/home/ardie/Documents/knowledge/my-org-files/misc/2021/PythonDiary.org"))
 
 ;; no global binding
 
@@ -197,7 +230,7 @@
 (defun my-open-non-python-diary ()
   (interactive)
   "my non-python diary"
-  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2025/nonPythonDiary2.org"))
+  (find-file "/home/ardie/Documents/knowledge/my-org-files/misc/2025/nonPythonDiary2.org"))
 
 ;; no global binding
 
@@ -206,7 +239,7 @@
 (defun my-open-daily-java ()
   (interactive)
   "my daily java"
-  (find-file "/home/ardie/Documents/my_notes/my-org-files/misc/2024/daily_java.org"))
+  (find-file "/home/ardie/Documents/knowledge/my-org-files/misc/2024/daily_java.org"))
 ;; no global binding
 
 
@@ -214,7 +247,61 @@
 
 ;; ========== we dont bind to function anymore ==========
 
-(vertico-mode 1)
+;; ==================================================
+;; (vertico-mode 1)
+;; ===== for docs, check completion-styles-alist     
+;; (add-to-list 'completion-styles 'flex)
+
+(use-package vertico
+
+  :init
+  (vertico-mode)
+  :config
+  ;; (add-to-list 'completion-styles 'flex)
+    :bind
+  (
+   :map vertico-map
+
+   ("M-a" . vertico-previous)
+   ("M-e" . vertico-next)
+   ))
+
+(use-package swiper
+
+  ;; :init
+  ;; :config
+  ;; (ivy-mode)
+  ;; :config
+  ;; ;; (add-to-list 'completion-styles 'flex)
+  :bind
+  (
+   :map swiper-map
+
+   ("M-a" . ivy-previous-line)
+   ("M-e" . ivy-next-line)
+   )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; ==================================================
+
+
 (marginalia-mode 1)
 
 (setq read-file-name-completion-ignore-case t
@@ -326,8 +413,9 @@
 (defun my-symbol ()
   (interactive)
   (setq my-symbol-numvar (append (cdr my-symbol-numvar)  (list (pop my-symbol-numvar))))
-  (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
-  (highlight-phrase var1 (car my-symbol-numvar))
+  (let ((ardie/the-text (buffer-substring-no-properties  (region-beginning) (region-end))))
+       (highlight-phrase ardie/the-text (car my-symbol-numvar))
+       )
   (print (car my-symbol-numvar))
   (pop-mark)
   )
@@ -335,10 +423,11 @@
 (defun my-symbol-no-pop ()
   (interactive)
   (setq my-symbol-numvar (append (cdr my-symbol-numvar)  (list (pop my-symbol-numvar))))
-  (setq var1 (buffer-substring-no-properties  (region-beginning) (region-end)))
-  (highlight-phrase var1 (car my-symbol-numvar))
+  (let ((ardie/the-text (buffer-substring-no-properties  (region-beginning) (region-end))))
+  (highlight-phrase ardie/the-text (car my-symbol-numvar))
+       )
   (print (car my-symbol-numvar))
-
+(print "success")
   )
 
 
@@ -495,8 +584,9 @@
   :bind
   (:map company-active-map
 	("<tab>" . company-complete-selection)
-	([return] . nil)    	      
-        ("RET"    . nil)    	
+	([return] . company-abort) ;; original is nil not company-abort	
+        ("RET"    . company-abort) ;; original is nil not company-abort
+	("ESC" . company-abort)    	      
 	)
   ;; (:map company-active-map
   ;; 	)
@@ -532,14 +622,24 @@
   :config
   (add-to-list 'bookmark-alist '("my downloads" (filename . "~/Downloads/")))
   (add-to-list 'bookmark-alist '("my fiverr" (filename . "~/Documents/fiverr/")))
-  (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/my_notes/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
+  (add-to-list 'bookmark-alist '("my forth" (filename . "~/Documents/knowledge/hardcoreSoftwareEngineering/langs/forth/ProgramForth.pdf")))
   (add-to-list 'bookmark-alist '("my CV" (filename . "~/Documents/reading/CV/alive/supertemp/indeed_temp/")))
   )
 
 
-(setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
+;; (setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
+(setq org-agenda-files (append '("/home/ardie/Desktop/lessons/")
+    (directory-files-recursively "/home/ardie/Documents/knowledge/my-org-files/" "\\.org$")
+      ))
 (setq org-drill-learn-fraction 0.3)
 
 
 (setq browse-url-browser-function 'browse-url-generic)
 (setq browse-url-generic-program "firefox")
+
+
+;; ==================================================
+;; splitting windows right instead of below, default is 160
+
+
+(setq split-width-threshold 140)

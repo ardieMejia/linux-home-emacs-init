@@ -23,6 +23,14 @@
 (add-hook 'c++-mode-hook
           (lambda () (local-set-key (kbd "M-<return>") 'ardie/add-semicolon-at-cpp)))
 
+
+
+;; ==================================================
+;; ===== we REALLY need to change this ==============
+;; ==================================================
+(add-hook 'c-mode-hook
+          (lambda () (local-set-key (kbd "M-<return>") 'ardie/add-semicolon-at-cpp)))
+
 (use-package c++-mode
   :hook
   (c++-mode . electric-pair-mode)
@@ -33,7 +41,7 @@
   
   
   (setq c-basic-offset 2)
-  :config
+
 
 
   

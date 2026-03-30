@@ -15,6 +15,7 @@
       '(
 	(ardie/special-org-mode . ardie/special-org-mode-abbrev-table)
 	(ardie/c++-mode . ardie/c++-mode-abbrev-table)
+	(ardie/c-mode . ardie/c-mode-abbrev-table)
 	)
       )
 
@@ -52,6 +53,12 @@
   (message "My c++ mode is active!")
   )
 
+(define-derived-mode ardie/c-mode c-mode  "ardie's c mode"
+  "Major mode for ardie's c completion"
+  :abbrev-table ardie/c-mode-abbrev-table
+  (message "Its Raylib time!")
+  )
+
 ;; (add-hook 'ardie/special-org-mode-hook 'abbrev-mode)
 
 
@@ -77,7 +84,9 @@
   (setq save-abbrevs t)
   :hook
   (ardie/special-org-mode . abbrev-mode)
-  (ardie/c++-mode . abbrev-mode))
+  (ardie/c++-mode . abbrev-mode)
+  (ardie/c-mode . abbrev-mode)
+    )
 
 
 

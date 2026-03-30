@@ -27,7 +27,7 @@
 	 :map sly-mrepl-mode-map
 	      ("<up>" . (lambda () (interactive)(sly-mrepl-previous-input-or-button 1)))
 	      ("<down>" . (lambda () (interactive) (sly-mrepl-next-input-or-button 1)))
-	      ("C-c ," . (lambda () (interactive)(insert ",")))
+	      ;; ("C-c ," . (lambda () (interactive)(insert ",")))
 	      ;; ("C-c c" . (lambda () (interactive)(insert "m")))
 	      )
   )
