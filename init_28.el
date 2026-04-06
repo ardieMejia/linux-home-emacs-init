@@ -147,15 +147,7 @@
 
   ;; I have no idea why this goes in init?? when other use-package puts this in :config
   
-  ;; (global-set-key (kbd "C-c C-'") 'ardie/org-enter-small)
-  ;; (global-set-key (kbd "C-c C-<return>") 'org-meta-return)
-  
-  ;; (defun ardie/org-enter-small ()
-  ;;   (interactive)
-  ;;   (print "testing")
-  ;;   (org-meta-return)
-  ;;   (org-metaright)
-  ;;   )
+
 
   (define-key org-mode-map (kbd "M-h") nil)
 (define-key org-mode-map (kbd "M-h") 'org-metaleft)
@@ -478,3 +470,23 @@ Version: 2023-06-26"
 
 ;; ===== our early attempts at automating presentation slides, they are still generally "meh"
 ;; (load-file (concat ardie/all-compute-cfg-dir "my_quarto/init-quarto.el"))
+
+
+;; ===== nothingness
+
+;; (icomplete-mode)
+;; (icomplete-vertical-mode)
+;; (define-key global-map (kbd "M-e") 'icomplete-forward-completions)
+;; (define-key global-map (kbd "M-a") 'icomplete-backward-completions)
+
+;; bind 'set completion-ignore-case on'
+
+
+;; bind '"\ea": backward-char'
+;; bind '"\ee": forward-char'
+;; bind '"\C-a": backward-word'
+;; bind '"\C-e": forward-word'
+
+
+;; ===== nothingness
+
