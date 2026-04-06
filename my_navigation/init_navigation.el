@@ -309,6 +309,7 @@
       completion-ignore-case t)
 
 
+;; ===== close all buffers, except ardie-scratch and "Async Shell Command" 
 (defun close-all-buffers()
   (interactive)
   (dolist (ardie/a-buffer (buffer-list) )
@@ -316,8 +317,21 @@
 	   (buffer-name ardie/a-buffer)
 	   ))
       (if (not (equal ardie/a-buffer-name "*ardie-scratch*"))
-	  (kill-buffer ardie/a-buffer-name)
+	  (if (not (string-match "Async Shell Command" ardie/a-buffer-name))
+	      (kill-buffer ardie/a-buffer-name)
+	    )
 	nil))))
+
+
+;; (defun close-all-buffers()
+;;   (interactive)
+;;   (dolist (ardie/a-buffer (buffer-list) )
+;;     (let ((ardie/a-buffer-name
+;; 	   (buffer-name ardie/a-buffer)
+;; 	   ))
+;;       (if (not (equal ardie/a-buffer-name "*ardie-scratch*"))
+;; 	  (kill-buffer ardie/a-buffer-name)
+;; 	nil))))
 
 ;; (defun close-all-buffers ()
 ;;   (interactive)
@@ -627,10 +641,10 @@
   )
 
 
-;; (setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
-(setq org-agenda-files (append '("/home/ardie/Desktop/lessons/")
-    (directory-files-recursively "/home/ardie/Documents/knowledge/my-org-files/" "\\.org$")
-      ))
+(setq org-agenda-files '("/home/ardie/Desktop/lessons/"))
+;; (setq org-agenda-files (append '("/home/ardie/Desktop/lessons/")
+;;     (directory-files-recursively "/home/ardie/Documents/knowledge/my-org-files/" "\\.org$")
+;;       ))
 (setq org-drill-learn-fraction 0.3)
 
 

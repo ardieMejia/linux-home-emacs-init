@@ -19,7 +19,11 @@
   (c-mode . electric-pair-mode)
 
   :config
+  ;; cc settings are local, which is problematic
+  ;; these dont work, instead, we can either use a hook, or in our case, a derived mode
+  ;; and put our variable/settings there
   (setq c-basic-offset 4)
+  (setq c-indentation-style "k&r")
 
   :bind
   (

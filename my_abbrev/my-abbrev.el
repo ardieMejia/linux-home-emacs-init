@@ -57,6 +57,11 @@
   "Major mode for ardie's c completion"
   :abbrev-table ardie/c-mode-abbrev-table
   (message "Its Raylib time!")
+  ;; ===== cc-mode variables are buffer-local, which is not what normal Emacs users are usually expecting
+  ;; ===== so we do this:  
+  (setq c-basic-offset 4)
+  (setq c-indentation-style "k&r")
+  (setq projectile-indexing-method 'native)
   )
 
 ;; (add-hook 'ardie/special-org-mode-hook 'abbrev-mode)

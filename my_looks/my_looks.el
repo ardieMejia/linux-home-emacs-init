@@ -74,13 +74,22 @@ Falls back to `project-current' if PROJ is not specified."
 
   
   (defun ardie/switch-d()
-  (let ((commit-hash (current-kill 0)))
-    ;; (shell-command "git checkout .") ;; if restore doesnt work, we replace it back with old git checkout .
-    (shell-command "git restore .")
-    (let
-        ((switch-result (shell-command-to-string (concat "git switch -d " commit-hash))))
-      (print switch-result)
-      (revert-buffer))))
+    (let ((commit-hash (string-trim (current-kill 0))))
+      ;; (shell-command "git checkout .") ;; if restore doesnt work, we replace it back with old git checkout .
+      (shell-command "git restore .")
+
+      ;; ------------------------------
+      ;; ===== NOTE_TO_SELF: to make sense of this code, read from emacs.org 	 
+      ;; ------------------------------
+      
+      (read-from-minibuffer (concat
+			     (with-temp-buffer
+			       (call-process "git" nil (current-buffer) nil "switch" "-d" commit-hash)
+			       (buffer-string))
+
+			     " --- Continue:"))
+      (revert-buffer nil t)     
+      ))
 
     ;; ===== discard short changes, back to current commit
   (global-set-key (kbd "C-<drag-mouse-8>") 'ardie/discard-unstaged-changes)

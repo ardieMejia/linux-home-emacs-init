@@ -126,6 +126,7 @@
   (add-to-list 'org-structure-template-alist '("hh" . "src haskell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("cp" . "src c++"))
+  (add-to-list 'org-structure-template-alist '("cc" . "src c"))
   (add-to-list 'org-structure-template-alist '("f" . "src forth"))
   (add-to-list 'org-structure-template-alist '("sh" . "src html"))
   (add-to-list 'org-structure-template-alist '("ss" . "src shell"))
