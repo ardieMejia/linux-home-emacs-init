@@ -412,16 +412,17 @@
      (hydra-pop)
      (makunbound 'ardie/right-char-count)
      (set-cursor-color "#000000")
+     (pop-mark)
      )
    :exit t)
   ("e"
    (progn
      (right-char)
      (if (bound-and-true-p ardie/right-char-count)
-	 (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 7)
+	 (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 3)
 	     (progn
 	       (set-cursor-color "#0096FF")
-	       (right-char (min (- ardie/right-char-count 7) 4))
+	       (right-char (min (- ardie/right-char-count 3) 3))
 	       )
 	   nil
 	   )
@@ -442,10 +443,10 @@
   ("E" (progn
 	 (next-line)
 	 (if (bound-and-true-p ardie/right-char-count)
-	     (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 6)
+	     (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 3)
 		 (progn
 		   (set-cursor-color "#0096FF")
-		   (next-line (min (- ardie/right-char-count 6) 4))
+		   (next-line (min (- ardie/right-char-count 3) 3))
 		   )
 	       nil
 	       )
@@ -460,6 +461,27 @@
 	 (my-right-char-hydra/body)
 	 )
    "" :column "4")
+  (";"
+   (if mark-active
+       (pop-mark)
+     (set-mark (point))
+     )
+
+   "mark")
+  ("k" (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-region (region-beginning) (region-end))
+	 ;; (kill-line)
+	 nil
+	 )
+   "kill" :exit t)
+  ("w" (progn
+	 (kill-ring-save (region-beginning) (region-end))
+	 )
+   "kill-save" :exit t)
   )
 
 
@@ -473,16 +495,17 @@
      (hydra-pop)
      (makunbound 'ardie/left-char-count)
      (set-cursor-color "#000000")
+     (pop-mark)
      )
    :exit t)
   ("a"
    (progn
      (left-char)
      (if (bound-and-true-p ardie/left-char-count)
-	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 7)
+	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 3)
 	     (progn
 	       (set-cursor-color "#0096FF")
-	       (left-char (min (- ardie/left-char-count 7) 4))
+	       (left-char (min (- ardie/left-char-count 3) 3))
 	       )
 	   nil
 	     )
@@ -504,10 +527,10 @@
    (progn
      (previous-line)
      (if (bound-and-true-p ardie/left-char-count)
-	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 6)
+	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 3)
 	     (progn
 	       (set-cursor-color "#0096FF")
-	       (previous-line (min (- ardie/left-char-count 6) 4))
+	       (previous-line (min (- ardie/left-char-count 3) 3))
 	       )
 	   nil
 	   )
@@ -523,6 +546,27 @@
        (my-left-char-hydra/body)
        )      
      "right navigation" :column "4")
+      (";"
+   (if mark-active
+       (pop-mark)
+     (set-mark (point))
+     )
+
+   "mark")
+  ("k" (progn
+	 (if buffer-read-only
+	     (read-only-mode -1)
+	   nil
+	   )
+	 (kill-region (region-beginning) (region-end))
+	 ;; (kill-line)
+	 nil
+	 )
+   "kill" :exit t)
+  ("w" (progn
+	 (kill-ring-save (region-beginning) (region-end))
+	 )
+   "kill-save" :exit t)
     )
 
 
