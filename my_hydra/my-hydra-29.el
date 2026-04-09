@@ -404,7 +404,7 @@
 
 (defhydra my-right-char-hydra
   ;; (:color purple :foreign-keys nil)
-  (:color purple :foreign-keys nil)
+  (:color purple :foreign-keys run)
   "my navigation hydra"
 
   ("q"
@@ -417,6 +417,10 @@
    :exit t)
   ("e"
    (progn
+     (if mark-active
+	 nil
+       (set-mark (point))
+       )
      (right-char)
      (if (bound-and-true-p ardie/right-char-count)
 	 (if (> (setq-local ardie/right-char-count (1+ ardie/right-char-count)) 3)
@@ -487,7 +491,7 @@
 
 (defhydra my-left-char-hydra
   ;; (:color purple :foreign-keys nil)
-  (:color purple :foreign-keys nil)
+  (:color purple :foreign-keys run)
   "my navigation hydra"
 
   ("q"
@@ -500,6 +504,10 @@
    :exit t)
   ("a"
    (progn
+     (if mark-active
+	 nil
+       (set-mark (point))
+       )
      (left-char)
      (if (bound-and-true-p ardie/left-char-count)
 	 (if (> (setq-local ardie/left-char-count (1+ ardie/left-char-count)) 3)
